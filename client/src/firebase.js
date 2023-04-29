@@ -30,16 +30,21 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
 export const gameExists = async (id) => {
-  const gameRef = doc(db, "games", id);
-  const docSnap = await getDoc(gameRef);
-  return docSnap.exists();
+  return (await getActiveGames()).includes(id);
 };
 
-const ID_DIGITS = 6;
+export const getActiveGames = async () => {
+  const gamesRef = collection(db, "games");
+  const gamesSnap = await getDocs(gamesRef);
+  return gamesSnap.docs.map((doc) => doc.id);
+}
 
-const createID = () => {
-  let id = Math.floor(Math.random() * Math.pow(10, 6));
-  if (gameExists(id)) id = createID();
+const createID = async () => {
+  let id = "";
+  let activeGames = await getActiveGames();
+  while (id == "" || activeGames.includes(id)) {
+    id = createRandomHexString(6);
+  }
   return id;
 };
 
@@ -75,14 +80,21 @@ export const getLocalData = () => {
   };
 };
 
-export const createNewGame = (hostName) => {
-  const id = createID();
+export const createNewGame = async (hostName) => {
+  const id = await createID();
   const player = createPlayer(hostName);
 
-  const gameRef = doc(db, "games", id);
+  // This is why we should be using typescript!
+  // https://stackoverflow.com/questions/70731173/firebase-firestoretypeerror-n-indexof-is-not-a-function
+  const gameRef = doc(db, "games", id); 
+
+  const players = {};
+  players[player.name] = player;
+
   setDoc(gameRef, {
     id: id,
-    players: [player],
+    players: players,
+    host: player.name,
     round: 0,
     stage: 0,
     prompt: "",
@@ -98,7 +110,7 @@ export const createNewGame = (hostName) => {
 
 export const joinGame = async (id, name) => {
   const gameRef = doc(db, "games", id);
-  if (gameExists(id)) {
+  if (await gameExists(id)) {
     return [false, "Game does not exist"];
   }
 
