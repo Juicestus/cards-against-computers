@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "express": "^4.18.2",
-    "firebase": "^9.17.1",
+    "firebase": "^9.21.0",
     "firebase-admin": "^11.5.0"
   },
   "scripts": {
@@ -15,5 +15,6 @@
       "react-app",
       "react-app/jest"
     ]
-  }
+  },
+  "type":"module"
 }
