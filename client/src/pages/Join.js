@@ -2,6 +2,7 @@ import {getState, useState} from "react"
 import {useHistory} from "react-router-dom"
 import {gameExists, joinGame} from "../firebase"
 import {useNavigate} from "react-router-dom"
+import {Form, Button} from "react-bootstrap"
 import "../index.css"
 
 const JoinGame = () => {
