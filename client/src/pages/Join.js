@@ -1,24 +1,47 @@
-import {getState, useState} from "react"
+import { useState} from "react"
 import {useHistory} from "react-router-dom"
-import {gameExists, joinGame} from "../firebase"
+import {gameExists, joinGame, saveLocalData} from "../firebase"
 import {useNavigate} from "react-router-dom"
 import {Form, Button} from "react-bootstrap"
 import "../index.css"
+import config from "../config.js"
 
-const JoinGame = () => {
-    const [userGameCode, setUserGameCode] = getState("");
+const Join = () => {
+    const [userGameCode, setUserGameCode] = useState("");
     const [userName, setUserName] = useState("");
 
     const navigate = useNavigate();
     
-    const submitHandler = () => {
-        joinGame(userGameCode, userName).then(([good, message]) => {
-            if (good) {
-                navigate("/game/" + userGameCode);
-            } else {
-                alert(message);
-            } 
-         });
+    const submitHandler = (e) => {
+
+        e.preventDefault();
+
+        let ugc = userGameCode;
+        console.log(ugc);
+
+        let reqForm = config().backendURL + "/joinGame" + "?id=" + ugc + "&name=" + userName;
+        fetch(reqForm).then((res) => {
+            // let good = false;
+
+            let good;
+            let message;
+            let player;
+            res.json().then(resJSON => {
+                console.log(resJSON);
+                good = resJSON[0];
+                message = resJSON[1];
+                player = resJSON[2];
+
+                if (good) {
+                    saveLocalData(player.id, player.name, player.privateKey);
+                    navigate("/game/" + ugc);
+                } else {
+                    alert(message)
+                }
+            })
+
+            
+        })
     }
 
             // omar i have to commit rn
@@ -31,7 +54,7 @@ const JoinGame = () => {
                 <Form.Label>Game Code</Form.Label>
                 <Form.Control type="text" id="gameCode" name="gameCode" onChange={(e) => setUserGameCode(e.target.value)}/>
                 <Form.Label>Name</Form.Label>
-                <Form.Cotrol type="text" id="name" name="name" onChange={(e) => setUserName(e.target.value)}/>
+                <Form.Control type="text" id="name" name="name" onChange={(e) => setUserName(e.target.value)}/>
                 <Button onClick={submitHandler}>Join Game</Button>
             </Form.Group>
             </Form>
@@ -40,4 +63,4 @@ const JoinGame = () => {
     );
 }
 
-export default JoinGame;
+export default Join;

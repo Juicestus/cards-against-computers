@@ -1,5 +1,6 @@
 import express from "express"
 import * as firebaseActions from "./firebaseActions.js"
+import cors from "cors"
  
 const app = express();
 const PORT = 3001;
@@ -8,11 +9,7 @@ app.use(express.json());
 
 // implements query parameters for data exchange!
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", req.get("Access-Control-Request-Headers"));
-    next();
-});
+app.use(cors())
 
 app.get('/gameExists', async (req, res) => {
     let id = req.query.id;
@@ -26,6 +23,7 @@ app.get('/getActiveGames', async (req, res) => {
 })
 
 app.get('/createNewGame', async (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     let hostName = req.query.hostName;
     if (!hostName) {
         res.status(400).send();

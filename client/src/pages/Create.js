@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
-import { auth, logInWithEmailAndPassword, createNewGame } from "../firebase";
+import { auth, logInWithEmailAndPassword, createNewGame, saveLocalData } from "../firebase";
 import { Button } from "react-bootstrap"
+import config from "../config.js"
 
 const Create = () => {
 
@@ -15,13 +16,24 @@ const Create = () => {
     const submitHandler = (e) => {
         e.preventDefault();
 
-        let newId;
-        createNewGame(name).then((id) => {
-            newId = id;
+        let reqForm = config().backendURL + "/createNewGame" + "?hostName=" + name;
+
+        fetch(reqForm).then((player) => {
+            let playerJSON;
+            player.json().then((r) => {
+                playerJSON = r;
+
+                console.log(playerJSON)
+                saveLocalData(playerJSON.id, playerJSON.hostName, playerJSON.privateKey)
+
+                navigate("/game/" + playerJSON.id);
+            })
             
+
+        }).catch(e => {
+            alert(e);
         })
-        new
-        navigate("/game/" + newId);
+
     }
 
 

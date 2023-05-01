@@ -96,13 +96,13 @@ export const createNewGame = async (hostName) => {
 export const joinGame = async (id, name) => {
     const gameRef = doc(db, "games", id);
     if (await gameExists(id)) {
-      return [false, "Game does not exist"];
+      return [false, "Game does not exist", {}];
     }
   
     const data = (await getDoc(gameRef)).data();
     data["players"].forEach((player) => {
       if (player.name === name) {
-        return [false, "Name already taken"];
+        return [false, "Name already taken", {}];
       }
     });
     
@@ -112,7 +112,7 @@ export const joinGame = async (id, name) => {
       players: arrayUnion(player),
     });
   
-    saveLocalData(id, name, player.key);
+    // saveLocalData(id, name, player.key);
   
     return [
       true,
