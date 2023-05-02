@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "react-bootstrap"
+import { Form, Button } from "react-bootstrap";
 import { queryBackend } from "../net";
 import { saveLocalData } from "../local";
 
@@ -9,42 +9,43 @@ const Create = () => {
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
-    const submitHandler = (event) => {
-        event.preventDefault();
+  const submitHandler = (event) => {
+    event.preventDefault();
 
-        queryBackend("createNewGame", {
-          hostName: name
-        }, (content) => {
-          saveLocalData(content.id, content.hostName, content.privateKey)
-          navigate("/game/" + content.id);
-        });
-    };
+    queryBackend(
+      "createNewGame",
+      {
+        hostName: name,
+      },
+      (content) => {
+        saveLocalData(content.id, content.hostName, content.privateKey);
+        navigate("/game/" + content.id);
+      }
+    );
+  };
 
-	return ( 
+  return (
     <div>
-      <div>
-        <h1 className="header" style={{ marginTop: "1em" }}>
-          Create a Game
-        </h1>
-      </div>
-      <div style={{ display: "flex", margin: "1em", marginTop: "1.5em" }}>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Enter your name"
-          style={{
-            marginLeft: "1.5em",
-            width: "10em",
-            marginRight: "1em",
-            borderRadius: ".1em",
-            borderBlockColor: "blue",
-            height: "3em",
-          }}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Button onClick={submitHandler}>Create Room</Button>
-      </div>
+      <h1 className="heading" style={{ marginTop: ".5em", textAlign: "center" }}>
+        Create A Game
+      </h1>
+      <Form>
+        <Form.Group
+          style={{ marginLeft: "5em", marginRight: "5em", marginTop: "3em" }}
+        >
+          <div style={{ display: "flex", marginTop: "1em" }}>
+            <Form.Control
+              type="text"
+              id="name"
+              name="name"
+              placeHolder="Your Name?"
+              style={{ marginRight: "1em" }}
+              onChange={(event) => setName(event.target.value)}
+            />
+            <Button onClick={submitHandler}>Create</Button>
+          </div>
+        </Form.Group>
+      </Form>
     </div>
   );
 };
