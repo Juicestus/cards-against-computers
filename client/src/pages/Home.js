@@ -1,48 +1,28 @@
 import { Button } from "react-bootstrap";
 
-const Homepage = () => {
+import "../styles/home.css";
+
+const Home = () => {
   return (
-    <div className="homepage">
-      <h1
-        style={{
-          fontSize: "4em",
-          alignItems: "center",
-          flexDirection: "column",
-          display: "flex",
-        }}
-      >
+    <div className="home-page">
+      <h1 className="home-heading">
         Cards <br /> Against <br /> Computers.
       </h1>
 
-      <h4 className="header" style={{ fontSize: "1.3em", marginLeft: "-5em", marginTop: ".5em" }}>
+      <h4 className="home-sub-heading">
         A party game <br /> for horrible machines.
       </h4>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: "5em",
-          flexDirection: "column",
-          marginRight: "2em",
-          marginLeft: "2em",
-        }}
-      >
-        <Button href="/create" className="homepage-buttons">
-          Create a Room
+      <div className="home-button-container">
+        <Button href="/create" className="home-big-button">
+          Create Game
         </Button>
-        <Button
-          href="/join"
-          className="homepage-buttons"
-          style={{
-            marginTop: "1em",
-          }}
-        >
-          Join a Room
+        <Button href="/join" className="home-big-button">
+          Join Game
         </Button>
       </div>
     </div>
   );
 };
 
-export default Homepage;
+export default Home;

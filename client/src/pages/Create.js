@@ -1,74 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
-import "../styles/index.css";
-import { auth, logInWithEmailAndPassword, createNewGame, saveLocalData } from "../firebase";
-import { Button } from "react-bootstrap"
-import config from "../config.js"
+import { Button } from "react-bootstrap";
+import { queryBackend } from "../net";
+import { saveLocalData } from "../local";
+import { bindInput } from "../util";
+import "../styles/create.css"
 
 const Create = () => {
   const [name, setName] = useState("");
+  
+  const changeHandler = (e) => {
+    e.target.value = e.target.value.toUpperCase()
+    setName(e.target.value);
+  }
+
   const navigate = useNavigate();
 
-  const submitHandler = (e) => {
-    e.preventDefault();
+  const submitHandler = (event) => {
+    event.preventDefault();
 
-    let newId;
-    createNewGame(name).then((id) => {
-      newId = id;
-    });
-    new navigate("/game/" + newId);
+    queryBackend(
+      "createNewGame",
+      {
+        hostName: name,
+      },
+      (content) => {
+        saveLocalData(content.id, content.hostName, content.privateKey);
+        navigate("/game/" + content.id);
+      }
+    );
   };
 
-
-    const submitHandler = (e) => {
-        e.preventDefault();
-
-        let reqForm = config().backendURL + "/createNewGame" + "?hostName=" + name;
-
-        fetch(reqForm).then((player) => {
-            let playerJSON;
-            player.json().then((r) => {
-                playerJSON = r;
-
-                console.log(playerJSON)
-                saveLocalData(playerJSON.id, playerJSON.hostName, playerJSON.privateKey)
-
-                navigate("/game/" + playerJSON.id);
-            })
-            
-
-        }).catch(e => {
-            alert(e);
-        })
-
-    }
-
-
-	return ( 
-    <div>
+  return (
+    <div className="create-page">
       <div>
-        <h1 className="header" style={{ marginTop: "1em" }}>
+        <h1 className="create-heading">
           Create a Game
         </h1>
       </div>
-      <div style={{ display: "flex", margin: "1em", marginTop: "1.5em" }}>
+      <div className="create-big-container">
+        <p className="create-label">YOUR NAME</p>
         <input
           type="text"
           id="name"
           name="name"
-          placeholder="Enter your name"
-          style={{
-            marginLeft: "1.5em",
-            width: "10em",
-            marginRight: "1em",
-            borderRadius: ".1em",
-            borderBlockColor: "blue",
-            height: "3em",
-          }}
-          onChange={(e) => setName(e.target.value)}
+          placeholder=""
+          className="create-big-input-box"
+          onChange={bindInput(setName)}
         />
-        <Button onClick={submitHandler}>Create Room</Button>
+        <br></br>
+        <Button className="create-big-button" onClick={submitHandler}>Create Game</Button>
       </div>
     </div>
   );

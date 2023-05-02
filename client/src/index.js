@@ -15,7 +15,7 @@ ReactDOM.render(
       <Route path="/create" element={<Create />} />
       <Route path="/join" element={<Join />} />
       <Route path="/game/:id" element={<Game />} />
-   </Routes>
+    </Routes>
   </Router>,
 
   document.getElementById("root")
