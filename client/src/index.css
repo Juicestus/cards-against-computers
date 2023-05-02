@@ -7,6 +7,7 @@ body {
   align-content: center;
   flex-direction: column;
   margin-top: 2em;
+  color: white;
 }
 
 .header {

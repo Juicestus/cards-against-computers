@@ -6,7 +6,6 @@ const Homepage = () => {
       <h1
         style={{
           fontSize: "4em",
-          color: "white",
           alignItems: "center",
           flexDirection: "column",
           display: "flex",
@@ -14,6 +13,10 @@ const Homepage = () => {
       >
         Cards <br /> Against <br /> Computers.
       </h1>
+
+      <h4 className="header" style={{ fontSize: "1.3em", marginLeft: "-5em", marginTop: ".5em" }}>
+        A party game <br /> for horrible machines.
+      </h4>
 
       <div
         style={{

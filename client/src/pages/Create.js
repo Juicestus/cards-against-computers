@@ -22,19 +22,28 @@ const Create = () => {
   return (
     <div>
       <div>
-        <href className="header">&#60;</href>
-        <h1 className="header">Create A Game</h1>
+        <h1 className="header" style={{ marginTop: "1em" }}>
+          Create a Game
+        </h1>
       </div>
-
-      <input
-        type="text"
-        id="name"
-        name="name"
-        placeholder="Enter your name"
-        style={{ marginLeft: "1.5em", width: "10em", marginRight: "1em" }}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <Button onClick={submitHandler}>Create Game</Button>
+      <div style={{ display: "flex", margin: "1em", marginTop: "1.5em" }}>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Enter your name"
+          style={{
+            marginLeft: "1.5em",
+            width: "10em",
+            marginRight: "1em",
+            borderRadius: ".1em",
+            borderBlockColor: "blue",
+            height: "3em",
+          }}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Button onClick={submitHandler}>Create Room</Button>
+      </div>
     </div>
   );
 };
