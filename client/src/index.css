@@ -1,3 +1,15 @@
 body {
-    background-color: white;
+  background-color: black;
+}
+
+.homepage {
+  display: flex;
+  flex-direction: column;
+  width: 20em;
+  height: 100vh;
+}
+
+.header {
+    color: white;
+    margin: .5em;
 }
