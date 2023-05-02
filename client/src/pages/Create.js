@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
-import "../styles/index.css";
 import { Button } from "react-bootstrap"
 import { createRequestForm } from "../net";
 import { saveLocalData } from "../local";
