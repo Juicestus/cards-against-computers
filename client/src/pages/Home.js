@@ -1,10 +1,8 @@
 import { Button } from "react-bootstrap";
 
-import "../styles/home.css";
-
 const Home = () => {
   return (
-    <div className="home-page">
+    <div className="page">
       <h1 className="home-heading">
         Cards <br /> Against <br /> Computers.
       </h1>

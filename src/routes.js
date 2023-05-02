@@ -33,3 +33,11 @@ export const joinGame = async (req, res) => {
   const name = req.query.name;
   res.send(await firebaseActions.joinGame(id, name));
 };
+
+export const getGameData = async (req, res) => {
+  const id = req.query.id;
+  const name = req.query.name;
+  const privateKey = req.query.privateKey;
+
+  res.send(await firebaseActions.getGameDataAsPlayer(id, name, privateKey));
+}

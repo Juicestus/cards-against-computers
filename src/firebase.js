@@ -111,7 +111,7 @@ export const joinGame = async (id, name) => {
   const data = (await getDoc(gameRef)).data();
 
   const players = data["players"];
-  for (const player of Object.keys(data["players"])) {
+  for (const player of Object.keys(players)) {
     if (player.name === name) {
       return wrapErr("Name already taken");
     }
@@ -134,3 +134,24 @@ export const joinGame = async (id, name) => {
     privateKey: player.key,
   });
 };
+
+export const getGameDataAsPlayer = async (id, name, privateKey) => {
+  const gameRef = doc(db, "games", id);
+  if (!(await gameExists(id))) {
+    return wrapErr("Game does not exist");
+  }
+
+  const data = (await getDoc(gameRef)).data();
+
+  const players = data["players"];
+  if (Object.keys(players).includes(name)) {
+    if (players[name].key !== privateKey) {
+      return wrapErr("Incorrect private key");
+    }
+  } else {
+    return wrapErr("Player does not exist");
+  }
+
+  return wrapOK(data);
+}
+
