@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
-import { auth, logInWithEmailAndPassword, createNewGame } from "../firebase";
-import { Button } from "react-bootstrap";
 import "../styles/index.css";
+import { auth, logInWithEmailAndPassword, createNewGame, saveLocalData } from "../firebase";
+import { Button } from "react-bootstrap"
+import config from "../config.js"
 
 const Create = () => {
   const [name, setName] = useState("");
@@ -19,7 +20,32 @@ const Create = () => {
     new navigate("/game/" + newId);
   };
 
-  return (
+
+    const submitHandler = (e) => {
+        e.preventDefault();
+
+        let reqForm = config().backendURL + "/createNewGame" + "?hostName=" + name;
+
+        fetch(reqForm).then((player) => {
+            let playerJSON;
+            player.json().then((r) => {
+                playerJSON = r;
+
+                console.log(playerJSON)
+                saveLocalData(playerJSON.id, playerJSON.hostName, playerJSON.privateKey)
+
+                navigate("/game/" + playerJSON.id);
+            })
+            
+
+        }).catch(e => {
+            alert(e);
+        })
+
+    }
+
+
+	return ( 
     <div>
       <div>
         <h1 className="header" style={{ marginTop: "1em" }}>
