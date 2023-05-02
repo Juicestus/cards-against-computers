@@ -40,11 +40,11 @@ const Create = () => {
           <NavLink to="/">{"←"}</NavLink>
         </h2>
         <h1 className="create-join-heading">
-          Create a Game
+          Create a Game.
         </h1>
       </div>
       <div className="create-join-big-container">
-        <h4 className="create-join-label">Your name</h4>
+        <h4 className="create-join-label">Your name.</h4>
         <input
           type="text"
           id="name"

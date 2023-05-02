@@ -37,12 +37,12 @@ const Join = () => {
           <NavLink to="/">{"←"}</NavLink>
         </h2>
         <h1 className="create-join-heading">
-          Join a Game
+          Join a Game.
         </h1>
       </div>
       <div className="create-join-big-container">
 
-        <h4 className="create-join-label">Game code</h4>
+        <h4 className="create-join-label">Game code.</h4>
         <input
           type="text"
           id="name"
@@ -53,7 +53,7 @@ const Join = () => {
         />
 
         <br></br>
-        <h4 className="create-join-label">Your name</h4>
+        <h4 className="create-join-label">Your name.</h4>
         <input
           type="text"
           id="name"
