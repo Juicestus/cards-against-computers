@@ -1,26 +1,26 @@
-.create-page {
+.create-join-page {
     display: flex;
     align-content: center;
     flex-direction: column;
     margin-top: 2em;
 }
 
-.create-heading {
+.create-join-heading {
     font-size: 3em;
     align-items: center;
     flex-direction: column;
     display: flex;
-    margin-top: 1.5em;
+    margin-top: .5em;
 }
 
-.create-big-button {
+.create-join-big-button {
 font-size: 2em;
 height: 5em;
 line-height: 4.5em;
 border-radius: 0.1em;
 }
 
-.create-big-container {
+.create-join-big-container {
     margin-top: 4em;
 display: flex;
 justify-content: center;
@@ -29,7 +29,7 @@ margin-right: 2em;
 margin-left: 2em;
 }
 
-.create-big-input-box {
+.create-join-big-input-box {
 font-size: 2em;
 height: 2em;
 line-height: 4.5em;
@@ -40,11 +40,20 @@ margin-top: -.4em;
 
 }
 
-.create-label {
+.create-join-label {
     font-size: 1em;
     align-items: left;
     flex-direction: column;
     display: flex;
     margin-top: 0em;
     margin-left: 1em;
+}
+
+.create-join-back {
+    font-size: 2em;
+    align-items: left;
+    flex-direction: column;
+    display: flex;
+    margin-top: .1em;
+    margin-left: 1.2em;
 }

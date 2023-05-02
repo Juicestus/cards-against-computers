@@ -5,6 +5,8 @@ import { Form, Button } from "react-bootstrap";
 import { saveLocalData } from "../local";
 import { queryBackend } from "../net";
 import { bindInput } from "../util";
+import { NavLink } from "react-router-dom";
+import "../styles/create-join.css"
 
 const Join = () => {
   const [gameCode, setGameCode] = useState("");
@@ -29,28 +31,43 @@ const Join = () => {
   };
 
   return (
-    <div>
-      <h1>Join Game </h1>
-      <Form>
-        <Form.Group>
-          <Form.Label>Game Code</Form.Label>
-          <Form.Control
-            type="text"
-            id="gameCode"
-            name="gameCode"
-            onChange={bindInput(setGameCode)}
-          />
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="text"
-            id="name"
-            name="name"
-            onChange={bindInput(setUserName)}
-          />
-          <Button onClick={submitHandler}>Join Game</Button>
-        </Form.Group>
-      </Form>
+    <div className="create-join-page">
+      <div>
+        <h2 className="create-join-back">
+          <NavLink to="/">{"←"}</NavLink>
+        </h2>
+        <h1 className="create-join-heading">
+          Join a Game
+        </h1>
+      </div>
+      <div className="create-join-big-container">
+
+        <p className="create-join-label">GAME CODE</p>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder=""
+          className="create-join-big-input-box"
+          onChange={bindInput(setGameCode)}
+        />
+
+        <br></br>
+        <p className="create-join-label">YOUR NAME</p>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder=""
+          className="create-join-big-input-box"
+          onChange={bindInput(setUserName)}
+        />
+        <br></br>
+        <br></br>
+        <Button className="create-join-big-button" onClick={submitHandler}>Join Game</Button>
+      </div>
     </div>
+
   );
 };
 

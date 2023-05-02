@@ -5,7 +5,8 @@ import { Button } from "react-bootstrap";
 import { queryBackend } from "../net";
 import { saveLocalData } from "../local";
 import { bindInput } from "../util";
-import "../styles/create.css"
+import { NavLink } from "react-router-dom";
+import "../styles/create-join.css"
 
 const Create = () => {
   const [name, setName] = useState("");
@@ -33,24 +34,28 @@ const Create = () => {
   };
 
   return (
-    <div className="create-page">
+    <div className="create-join-page">
       <div>
-        <h1 className="create-heading">
+        <h2 className="create-join-back">
+          <NavLink to="/">{"←"}</NavLink>
+        </h2>
+        <h1 className="create-join-heading">
           Create a Game
         </h1>
       </div>
-      <div className="create-big-container">
-        <p className="create-label">YOUR NAME</p>
+      <div className="create-join-big-container">
+        <p className="create-join-label">YOUR NAME</p>
         <input
           type="text"
           id="name"
           name="name"
           placeholder=""
-          className="create-big-input-box"
+          className="create-join-big-input-box"
           onChange={bindInput(setName)}
         />
         <br></br>
-        <Button className="create-big-button" onClick={submitHandler}>Create Game</Button>
+        <br></br>
+        <Button className="create-join-big-button" onClick={submitHandler}>Create Game</Button>
       </div>
     </div>
   );
