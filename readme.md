@@ -2,13 +2,8 @@
 
 An online game inspired by Cards Against Humanity.
 
-``` 
-├── client
-│   ├── public
-│   └── src
-│       ├── components = component objects
-│       ├── fonts = fonts directory
-│       ├── styles = css directory
-│       └── pages = page objects
-└── src = server code and routes
-```
+## Run development version
+
+In one terminal instance, run the server with `npm start`.
+
+In another terminal instance, run the client with `cd client; npm start`.
