@@ -42,7 +42,7 @@ const Join = () => {
       </div>
       <div className="create-join-big-container">
 
-        <p className="create-join-label">GAME CODE</p>
+        <h4 className="create-join-label">Game code</h4>
         <input
           type="text"
           id="name"
@@ -53,7 +53,7 @@ const Join = () => {
         />
 
         <br></br>
-        <p className="create-join-label">YOUR NAME</p>
+        <h4 className="create-join-label">Your name</h4>
         <input
           type="text"
           id="name"
