@@ -21,11 +21,17 @@ const Create = () => {
 
   return (
     <div>
-      <h1 style={{ color: "white" }}>Create Game</h1>
+      <div>
+        <href className="header">&#60;</href>
+        <h1 className="header">Create A Game</h1>
+      </div>
+
       <input
         type="text"
         id="name"
         name="name"
+        placeholder="Enter your name"
+        style={{ marginLeft: "1.5em", width: "10em", marginRight: "1em" }}
         onChange={(e) => setName(e.target.value)}
       />
       <Button onClick={submitHandler}>Create Game</Button>

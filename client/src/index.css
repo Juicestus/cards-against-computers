@@ -4,12 +4,19 @@ body {
 
 .homepage {
   display: flex;
+  align-content: center;
   flex-direction: column;
-  width: 20em;
-  height: 100vh;
+  margin-top: 2em;
 }
 
 .header {
-    color: white;
-    margin: .5em;
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+
+.homepage-buttons {
+  font-size: 2em;
+  height: 5em;
+  line-height: 4.5em;
 }
