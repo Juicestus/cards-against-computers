@@ -2,48 +2,33 @@ import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import "../styles/index.css";
-import { auth, logInWithEmailAndPassword, createNewGame, saveLocalData } from "../firebase";
 import { Button } from "react-bootstrap"
-import config from "../config.js"
+import { createRequestForm } from "../net";
+import { saveLocalData } from "../local";
 
 const Create = () => {
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-
-    let newId;
-    createNewGame(name).then((id) => {
-      newId = id;
-    });
-    new navigate("/game/" + newId);
-  };
-
-
     const submitHandler = (e) => {
         e.preventDefault();
 
-        let reqForm = config().backendURL + "/createNewGame" + "?hostName=" + name;
-
-        fetch(reqForm).then((player) => {
-            let playerJSON;
-            player.json().then((r) => {
-                playerJSON = r;
-
-                console.log(playerJSON)
-                saveLocalData(playerJSON.id, playerJSON.hostName, playerJSON.privateKey)
-
-                navigate("/game/" + playerJSON.id);
+        fetch(createRequestForm("createNewGame", {
+          hostName: name
+        })).then((response) => {
+            response.json().then((unpacked) => {
+              if (!unpacked.ok) {
+                alert(unpacked.msg);
+                return;
+              }
+              const content = unpacked.content;
+              saveLocalData(content.id, content.hostName, content.privateKey)
+              navigate("/game/" + content.id);
             })
-            
-
         }).catch(e => {
             alert(e);
-        })
-
-    }
-
+        });
+    };
 
 	return ( 
     <div>

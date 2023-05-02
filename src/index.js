@@ -1,6 +1,7 @@
 import express from "express"
-import * as firebaseActions from "./firebaseActions.js"
+import * as firebaseActions from "./firebase.js"
 import cors from "cors"
+import * as routes from "./routes.js"
  
 const app = express();
 const PORT = 3001;
@@ -11,33 +12,13 @@ app.use(express.json());
 
 app.use(cors())
 
-app.get('/gameExists', async (req, res) => {
-    let id = req.query.id;
-    console.log(id)
-    res.send( {"value" : await firebaseActions.gameExists(id) } )
-});
+app.get('/gameExists', routes.gameExists);
 
-app.get('/getActiveGames', async (req, res) => {
+app.get('/getActiveGames', routes.getActiveGames);
 
-    res.send(await firebaseActions.getActiveGames());
-})
+app.get('/createNewGame', routes.createNewGame);
 
-app.get('/createNewGame', async (req, res) => {
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    let hostName = req.query.hostName;
-    if (!hostName) {
-        res.status(400).send();
-        return;
-    }
-    res.send(await firebaseActions.createNewGame(hostName));
-})
-
-app.get('/joinGame', async (req, res) => {
-    let id = req.query.id;
-    let name = req.query.name;
-
-    res.send(await firebaseActions.joinGame(id, name));
-})
+app.get('/joinGame', routes.joinGame);
 
 
 app.listen(PORT, () => {

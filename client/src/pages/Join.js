@@ -1,10 +1,10 @@
 import { useState} from "react"
 import {useHistory} from "react-router-dom"
-import {gameExists, joinGame, saveLocalData} from "../firebase"
 import {useNavigate} from "react-router-dom"
 import {Form, Button} from "react-bootstrap"
 import "../index.css"
-import config from "../config.js"
+import { saveLocalData } from "../local";
+import * as net from "../net"
 
 const Join = () => {
     const [userGameCode, setUserGameCode] = useState("");
@@ -19,7 +19,7 @@ const Join = () => {
         let ugc = userGameCode;
         console.log(ugc);
 
-        let reqForm = config().backendURL + "/joinGame" + "?id=" + ugc + "&name=" + userName;
+        let reqForm = net.BACKEND_URL + "/joinGame" + "?id=" + ugc + "&name=" + userName;
         fetch(reqForm).then((res) => {
             // let good = false;
 

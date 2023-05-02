@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app";
 import fs from "fs"
 import path from "path"
 
+import { wrapOK, wrapErr } from "./routes.js";
+
 import {
     getFirestore,
     collection,
@@ -12,6 +14,7 @@ import {
     arrayUnion,
     getDocs,
 } from "firebase/firestore";
+
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -31,6 +34,11 @@ export const getActiveGames = async () => {
     const gamesRef = collection(db, "games");
     const gamesSnap = await getDocs(gamesRef);
     return gamesSnap.docs.map((doc) => doc.id);
+}
+
+// Right now, all names are valid, but this may change later
+const nameValid = async (name) => {
+  return true;
 }
 
 const createID = async () => {
@@ -59,12 +67,15 @@ const createPlayer = (name) => {
       hand: [],
     };
 };
-  
 
 export const createNewGame = async (hostName) => {
     const id = await createID();
     const player = createPlayer(hostName);
-  
+
+    if (!nameValid(hostName)) {
+      return wrapErr("Name is not valid");
+    }
+ 
     // This is why we should be using typescript!
     // fuck off!
     // https://stackoverflow.com/questions/70731173/firebase-firestoretypeerror-n-indexof-is-not-a-function
@@ -84,45 +95,41 @@ export const createNewGame = async (hostName) => {
       unusedResponses: [],
     });
   
-    // saveLocalData(id, hostName, player.key);
-  
-    return {
+    return wrapOK({
       id: id,
-      hostName: hostName,
+      name: player.name,
       privateKey: player.key
-    };
+    });
 };
 
 export const joinGame = async (id, name) => {
     const gameRef = doc(db, "games", id);
     if (await gameExists(id)) {
-      return [false, "Game does not exist", {}];
+      return wrapErr("Game does not exist");
     }
   
     const data = (await getDoc(gameRef)).data();
     data["players"].forEach((player) => {
       if (player.name === name) {
-        return [false, "Name already taken", {}];
+        return wrapErr("Name already taken");
       }
     });
     
+    if (!nameValid(name)) {
+      return wrapErr("Name is not valid");
+    }
+
     const player = createPlayer(name);
   
     await updateDoc(gameRef, {
       players: arrayUnion(player),
     });
-  
-    // saveLocalData(id, name, player.key);
-  
-    return [
-      true,
-      "Ok",
-      {
+    
+    return wrapOK({
         id: id,
         name: name,
         privateKey: player.key
-      }
-    ];
+    });
 }
 
   
