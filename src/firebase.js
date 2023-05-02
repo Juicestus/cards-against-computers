@@ -27,7 +27,7 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
 export const gameExists = async (id) => {
-    return (await getActiveGames()).includes(id);
+  return (await getActiveGames()).includes(id);
 };
 
 export const getActiveGames = async () => {
@@ -104,25 +104,28 @@ export const createNewGame = async (hostName) => {
 
 export const joinGame = async (id, name) => {
     const gameRef = doc(db, "games", id);
-    if (await gameExists(id)) {
+    if (!(await gameExists(id))) {
       return wrapErr("Game does not exist");
     }
   
     const data = (await getDoc(gameRef)).data();
-    data["players"].forEach((player) => {
+
+    const players = data["players"];
+    for (const player of Object.keys(data["players"])) {
       if (player.name === name) {
         return wrapErr("Name already taken");
       }
-    });
+    }
     
     if (!nameValid(name)) {
       return wrapErr("Name is not valid");
     }
 
     const player = createPlayer(name);
+    players[player.name] = player;
   
     await updateDoc(gameRef, {
-      players: arrayUnion(player),
+      players: players,
     });
     
     return wrapOK({

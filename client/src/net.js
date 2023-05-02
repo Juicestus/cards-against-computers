@@ -6,8 +6,23 @@ export const createRequestForm = (endpoint, params) => {
     for (const [name, value] of Object.entries(params)) {
         form += name + "=" + value + "&"; 
     }
-    if (form[form.length - 1] in ["?", "&"]) {
+    if (["?", "&"].includes(form[form.length - 1])) {
         form = form.substring(0, form.length - 1);
     }
     return form;
+}
+
+export const queryBackend = (endpoint, params, callback) => {
+    const form = createRequestForm(endpoint, params);
+    fetch(form).then((response) => {
+        response.json().then(unpacked => {
+            if (!unpacked.ok) {
+                alert(unpacked.msg);
+                return;
+            }
+            callback(unpacked.content);
+        })
+    }).catch(err => {
+        alert(err);
+    });
 }

@@ -2,30 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "react-bootstrap"
-import { createRequestForm } from "../net";
+import { queryBackend } from "../net";
 import { saveLocalData } from "../local";
 
 const Create = () => {
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
-    const submitHandler = (e) => {
-        e.preventDefault();
+    const submitHandler = (event) => {
+        event.preventDefault();
 
-        fetch(createRequestForm("createNewGame", {
+        queryBackend("createNewGame", {
           hostName: name
-        })).then((response) => {
-            response.json().then((unpacked) => {
-              if (!unpacked.ok) {
-                alert(unpacked.msg);
-                return;
-              }
-              const content = unpacked.content;
-              saveLocalData(content.id, content.hostName, content.privateKey)
-              navigate("/game/" + content.id);
-            })
-        }).catch(e => {
-            alert(e);
+        }, (content) => {
+          saveLocalData(content.id, content.hostName, content.privateKey)
+          navigate("/game/" + content.id);
         });
     };
 
