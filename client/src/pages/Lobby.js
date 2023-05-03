@@ -36,6 +36,24 @@ const Lobby = () => {
 
   }, [setGameData]);
 
+  const userListElements = () => {
+    const players = gameData["players"];
+    const host = gameData["host"];
+    if (players === undefined) {
+      return "";
+    }
+      console.log(host);
+    return Object.entries(players).map(([name, player]) => {
+      const classes = "lobby-card" + (name === host ? " lobby-host-color" : "");
+      return (
+        <div className={classes}>
+          <h2 className="lobby-card-text">{name}{name === host ? "  (host)" : ""}</h2>
+        </div>
+      );
+    });
+  }
+
+
 
   return (
     <div className="page">
@@ -48,15 +66,7 @@ const Lobby = () => {
         </h1>
       </div>
       <div className="home-button-container">
-
-        {gameData["players"] === undefined ? "" : Object.entries(gameData["players"]).map(([name, player]) => {
-          const isHost = name == gameData["hostName"];
-          return (
-            <div className="lobby-card">
-              <h2 className="lobby-card-text">{name}</h2>
-            </div>
-          );
-        })}
+        {userListElements()}
       </div>
       
     </div>

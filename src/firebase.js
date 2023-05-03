@@ -152,6 +152,14 @@ export const getGameDataAsPlayer = async (id, name, privateKey) => {
     return wrapErr("Player does not exist");
   }
 
+  data["players"] = removePrivateKeys(players);
+
   return wrapOK(data);
 }
 
+export const removePrivateKeys = (players) => {
+  Object.keys(players).forEach((name) => {
+    delete players[name].privateKey;
+  });
+  return players;
+}
