@@ -6,7 +6,8 @@ import "./styles/index.css";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
 import Join from "./pages/Join";
-import Game from "./pages/Game";
+import Lobby from "./pages/Lobby";
+import leaveGame from "./pages/Lobby";
 
 ReactDOM.render(
   <Router>
@@ -14,7 +15,8 @@ ReactDOM.render(
       <Route path="/" element={<Home />} />
       <Route path="/create" element={<Create />} />
       <Route path="/join" element={<Join />} />
-      <Route path="/game/:id" element={<Game />} />
+      <Route onLeave={leaveGame} path="/game/:id" element={<Lobby />} />
+      {/* <Route path="/game/:id" element={<Lobby />} /> */}
     </Routes>
   </Router>,
 

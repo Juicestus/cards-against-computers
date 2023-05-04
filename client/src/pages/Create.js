@@ -3,18 +3,13 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { queryBackend } from "../net";
-import { saveLocalData } from "../local";
+import { saveLocalData } from "../util";
 import { bindInput } from "../util";
 import { NavLink } from "react-router-dom";
-import "../styles/create-join.css"
 
 const Create = () => {
+
   const [name, setName] = useState("");
-  
-  const changeHandler = (e) => {
-    e.target.value = e.target.value.toUpperCase()
-    setName(e.target.value);
-  }
 
   const navigate = useNavigate();
 
@@ -27,14 +22,14 @@ const Create = () => {
         hostName: name,
       },
       (content) => {
-        saveLocalData(content.id, content.hostName, content.privateKey);
+        saveLocalData(content.id, name, content.privateKey);
         navigate("/game/" + content.id);
       }
     );
   };
 
   return (
-    <div className="create-join-page">
+    <div className="page">
       <div>
         <h2 className="create-join-back">
           <NavLink to="/">{"←"}</NavLink>
