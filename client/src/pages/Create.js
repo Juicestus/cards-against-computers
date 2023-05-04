@@ -8,6 +8,7 @@ import { bindInput } from "../util";
 import { NavLink } from "react-router-dom";
 
 const Create = () => {
+
   const [name, setName] = useState("");
 
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const Create = () => {
         hostName: name,
       },
       (content) => {
-        saveLocalData(content.id, content.hostName, content.privateKey);
+        saveLocalData(content.id, name, content.privateKey);
         navigate("/game/" + content.id);
       }
     );
