@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
-import { saveLocalData } from "../util";
+import { saveLocalData } from "../local";
 import { queryBackend } from "../net";
 import { bindInput } from "../util";
 import { NavLink } from "react-router-dom";
+import "../styles/create-join.css"
 
 const Join = () => {
   const [gameCode, setGameCode] = useState("");
@@ -23,14 +24,14 @@ const Join = () => {
         name: userName,
       },
       (content) => {
-        saveLocalData(content.id, userName, content.privateKey);
+        saveLocalData(content.id, content.name, content.privateKey);
         navigate("/game/" + content.id);
       }
     );
   };
 
   return (
-    <div className="page">
+    <div className="create-join-page">
       <div>
         <h2 className="create-join-back">
           <NavLink to="/">{"←"}</NavLink>

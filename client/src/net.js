@@ -1,5 +1,3 @@
-import { loadLocalData } from "./util";
-
 export const BACKEND_URL = "http://localhost:3001";
 
 export const createRequestForm = (endpoint, params) => {
@@ -14,25 +12,18 @@ export const createRequestForm = (endpoint, params) => {
 };
 
 export const queryBackend = (endpoint, params, callback) => {
-  queryBackendOnErr(endpoint, params, callback, () => {});
-};
-
-export const queryBackendOnErr = (endpoint, params, callback, onError) => {
   const form = createRequestForm(endpoint, params);
-  console.log(form);
   fetch(form)
     .then((response) => {
       response.json().then((unpacked) => {
         if (!unpacked.ok) {
-          alert("" + unpacked.code + ": " + unpacked.msg);
-          onError(unpacked);
+          alert(unpacked.msg);
           return;
         }
         callback(unpacked.content);
       });
     })
     .catch((err) => {
-      // if (verbose)
-        // alert(err);
+      alert(err);
     });
 };

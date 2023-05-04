@@ -20,10 +20,6 @@ app.get("/createNewGame", routes.createNewGame);
 
 app.get("/joinGame", routes.joinGame);
 
-app.get("/getGameData", routes.getGameData);
-
-app.get("/leaveGame", routes.leaveGame);
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
