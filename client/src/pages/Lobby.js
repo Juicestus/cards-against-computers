@@ -106,11 +106,10 @@ const Lobby = () => {
 
   const startGameHandler = () => {
     
-    if (gameData.players.length < 3) {
+    if (Object.keys(gameData.players).length < 3) {
       alert("Please wait until at least three players join to start the game!")
       return;
     }
-
     
     const localData = loadLocalData();
     queryBackend(
