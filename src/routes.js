@@ -11,6 +11,7 @@ export const errors = Object.freeze({
   INVALID_PRIVATE_KEY: err(5, "Invalid private key"),
   PLAYER_NOT_FOUND: err(6, "Player not found"),
   UNDEFINED_GAME_DATA: err(7, "Undefined game data"),
+  NOT_ENOUGH_PLAYERS:  err(8, "Too few players for this game")
 });
 
 export const wrapOK = (content) => {
@@ -47,6 +48,7 @@ export const joinGame = async (req, res) => {
 };
 
 export const getGameData = async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   const id = req.query.id;
   const name = req.query.name;
   const privateKey = req.query.privateKey;
@@ -61,4 +63,14 @@ export const leaveGame = (req, res) => {
 
   firebaseActions.leaveGame(id, name, privateKey);
   res.send(wrapOK({}));
+}
+
+export const startGame = async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  const id = req.query.id;
+  const name = req.query.name;
+  const privateKey = req.query.privateKey;
+
+  console.log("running!")
+  res.send(await firebaseActions.startGame(id, name, privateKey))
 }

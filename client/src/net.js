@@ -19,10 +19,10 @@ export const queryBackend = (endpoint, params, callback) => {
 
 export const queryBackendOnErr = (endpoint, params, callback, onError) => {
   const form = createRequestForm(endpoint, params);
-  console.log(form);
   fetch(form)
     .then((response) => {
       response.json().then((unpacked) => {
+        console.log(unpacked);
         if (!unpacked.ok) {
           alert("" + unpacked.code + ": " + unpacked.msg);
           onError(unpacked);

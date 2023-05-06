@@ -56,6 +56,7 @@ const Lobby = () => {
           (unpacked) => {
             if (unpacked.code === 2) {
               alert("Host left.")
+              navigate("/");
               leaveGame();
             }
             navigate("/");
@@ -104,8 +105,13 @@ const Lobby = () => {
   };
 
   const startGameHandler = () => {
+    
+    if (Object.keys(gameData.players).length < 3) {
+      alert("Please wait until at least three players join to start the game!")
+      return;
+    }
+    
     const localData = loadLocalData();
-
     queryBackend(
       "startGame",
       {
@@ -119,13 +125,18 @@ const Lobby = () => {
     );
   };
 
+  const copyHandle = () => {
+    // copy to clipboard
+    navigator.clipboard.writeText(code);
+  }
+
   return (
     <div className="page">
       <div>
         <h2 className="create-join-back">
           <NavLink to="/" onClick={() => leaveGame()}>{"←"}</NavLink>
         </h2>
-        <h1 className="lobby-heading">Lobby {code}.</h1>
+        <h1 className="lobby-heading" style={{cursor:"grab"}} onClick={copyHandle}>Lobby {code}.</h1>
       </div>
       <div className="home-button-container">
         {startGameButton()}

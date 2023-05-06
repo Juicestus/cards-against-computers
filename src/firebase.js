@@ -205,3 +205,28 @@ export const leaveGame = async (id, name, privateKey) => {
 
   return wrapOK({});
 }
+
+export const startGame = async (id, name, privateKey) => {
+  const gameRef = doc(db, "games", id);
+  if (!(await gameExists(id))) {
+    return wrapErr(errs.GAME_NOT_FOUND);
+  }
+
+  const data = (await getDoc(gameRef)).data();
+
+  if (data === undefined) return wrapErr(errs.UNDEFINED_GAME_DATA);
+
+  const players = data["players"];
+  if (Object.keys(players).includes(name)) {
+    if (players[name].key !== privateKey) {
+      return wrapErr(errs.INVALID_PRIVATE_KEY);
+    }
+  } else {
+    return wrapErr(errs.PLAYER_NOT_FOUND);
+  }
+
+  if (Object.keys(players).length < 3) {
+    return wrapErr(errs.NOT_ENOUGH_PLAYERS)
+  }
+
+}
