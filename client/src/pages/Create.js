@@ -39,6 +39,7 @@ const Create = () => {
       </div>
       <div className="create-join-big-container">
         <h4 className="create-join-label">Your name.</h4>
+        <br/>
         <input
           type="text"
           id="name"

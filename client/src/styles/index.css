@@ -50,90 +50,85 @@ p {
 }
 
 .create-join-heading {
-    font-size: 3em;
-    align-items: center;
-    flex-direction: column;
-    display: flex;
-    margin-top: .5em;
+  font-size: 3em;
+  align-items: center;
+  flex-direction: column;
+  display: flex;
+  margin-top: 0.5em;
 }
 
 .create-join-big-button {
-font-size: 2em;
-height: 5em;
-line-height: 4.5em;
-border-radius: 0.1em;
+  font-size: 2em;
+  height: 5em;
+  line-height: 4.5em;
+  border-radius: 0.1em;
 }
 
 .create-join-big-container {
-    margin-top: 4em;
-display: flex;
-justify-content: center;
-flex-direction: column;
-margin-right: 2em;
-margin-left: 2em;
+  margin-top: 4em;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-right: 2em;
+  margin-left: 2em;
 }
 
 .create-join-big-input-box {
-font-size: 2em;
-height: 2em;
-line-height: 4.5em;
-border-radius: 0.3em;
-padding: .5em;
-text-align: center;
-margin-top: -.4em;
-
+  font-size: 2em;
+  height: 2em;
+  line-height: 4.5em;
+  border-radius: 0.3em;
+  padding: 0.5em;
+  text-align: center;
+  margin-top: -0.4em;
 }
 
 .create-join-label {
-    font-size: 1em;
-    align-items: left;
-    flex-direction: column;
-    display: flex;
-    margin-top: 0em;
-    margin-left: .5em;
-    margin-bottom: 1em;
-    font-size: 1.3em;
+  font-size: 1em;
+  align-items: left;
+  flex-direction: column;
+  display: flex;
+  margin-top: 0em;
+  margin-left: 0.5em;
+  margin-bottom: 1em;
+  font-size: 1.3em;
 }
 
 .create-join-back {
-    font-size: 2em;
-    align-items: left;
-    flex-direction: column;
-    display: flex;
-    margin-top: .1em;
-    margin-left: 1.2em;
+  font-size: 2em;
+  align-items: left;
+  flex-direction: column;
+  display: flex;
+  margin-top: 0.1em;
+  margin-left: 1.2em;
 }
 
 .lobby-heading {
-    font-size: 2.5em;
-    align-items: center;
-    flex-direction: column;
-    display: flex;
-    margin-top: .5em;
+  font-size: 2.5em;
+  align-items: center;
+  flex-direction: column;
+  display: flex;
+  margin-top: 0.5em;
 }
 
 .lobby-card {
-    font-size: 1em;
-    /* background-color: #0d6efd; */
-    background-color: #fff;
-    /* padding: .5em; */
+  font-size: 1em;
+  /* background-color: #0d6efd; */
+  background-color: #fff;
+  /* padding: .5em; */
   height: 3.5em;
   margin-top: 1em;
   border-radius: 0.5em;
   text-align: left;
 }
 
-.lobby-host-color {
-  /* background-color: #198754; */
-}
-
 .lobby-card-text {
-    flex-direction: column;
-    display: flex;
-    margin-top: .75em;
-    margin-left: 2em;
-    margin-bottom: 0em;
-    font-size: 1.3em;
+  flex-direction: column;
+  display: flex;
+  margin-top: 0.75em;
+  margin-left: 2em;
+  margin-bottom: 0em;
+  font-size: 1.3em;
   color: #000;
 }
 
@@ -148,11 +143,51 @@ margin-top: -.4em;
 
 .lobby-players-label {
   font-size: 1em;
-    align-items: left;
-    flex-direction: column;
-    display: flex;
-    margin-top: 0em;
-    margin-left: .5em;
-    margin-bottom: 0em;
-    font-size: 1.3em;
+  align-items: left;
+  flex-direction: column;
+  display: flex;
+  margin-top: 0em;
+  margin-left: 0.5em;
+  margin-bottom: 0em;
+  font-size: 1.3em;
+}
+
+.card {
+  background-color: #fff;
+  color: black;
+  height: 60vh;
+  text-align: center;
+  margin: 1.5em;
+  margin-top: 1em;
+}
+
+.prompt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5em;
+  padding: 15px;
+}
+
+.small-card-img {
+  height: 3em;
+  width: 3em;
+  margin-bottom: .5em;
+}
+
+.card-branding {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5em;
+  position: absolute;
+  bottom: 1em;
+  margin-left: 1em;
+}
+
+.card-branding-name {
+  color: black;
+  font-size: 1em;
+  font-weight: bold;
+  margin-left: 0.3em;
 }

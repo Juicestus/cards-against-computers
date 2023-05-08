@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./styles/index.css";
-
+import Play from "./pages/Play";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
 import Join from "./pages/Join";
@@ -15,6 +15,7 @@ ReactDOM.render(
       <Route path="/create" element={<Create />} />
       <Route path="/join" element={<Join />} />
       <Route path="/game/:id" element={<Lobby />} />
+      <Route path="/play/" element={<Play />} />
     </Routes>
   </Router>,
 
