@@ -1,7 +1,8 @@
 body {
   background-color: black !important;
-  overflow: none;
-  height: 100%;
+  overflow-x: hidden;
+  width: 97%;
+  margin-left: 5%;
 }
 
 h1,
@@ -178,7 +179,7 @@ p {
 .small-card-img {
   height: 3em;
   width: 3em;
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
 }
 
 .card-branding {
@@ -199,10 +200,11 @@ p {
 }
 
 .carousel-indicators {
-  bottom: -.8em !important;
+  bottom: -0.8em !important;
   position: absolute !important;
 }
 
-.carousel-control-next, .carousel-control-prev {
-  margin: -.8em !important;
+.carousel-control-next,
+.carousel-control-prev {
+  margin: -0.8em !important;
 }
