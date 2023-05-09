@@ -14,17 +14,19 @@ export const createRequestForm = (endpoint, params) => {
 };
 
 export const queryBackend = (endpoint, params, callback) => {
-  queryBackendOnErr(endpoint, params, callback, () => {});
+  queryBackendOnErr(endpoint, params, callback, (unpacked) => {
+    alert("" + unpacked.code + ": " + unpacked.msg);
+  });
 };
 
 export const queryBackendOnErr = (endpoint, params, callback, onError) => {
   const form = createRequestForm(endpoint, params);
   fetch(form)
     .then((response) => {
+      console.log(response);
       response.json().then((unpacked) => {
         console.log(unpacked);
         if (!unpacked.ok) {
-          alert("" + unpacked.code + ": " + unpacked.msg);
           onError(unpacked);
           return;
         }

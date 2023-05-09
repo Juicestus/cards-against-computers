@@ -23,7 +23,7 @@ const Create = () => {
       },
       (content) => {
         saveLocalData(content.id, name, content.privateKey);
-        navigate("/game/" + content.id);
+        navigate("/game/lobby/" + content.id);
       }
     );
   };

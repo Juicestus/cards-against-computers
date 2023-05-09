@@ -27,3 +27,18 @@ export const registerGameLoop = (interval) => {
 export const getGameLoop = () => {
     return localStorage.getItem("gameLoop");
 }
+
+export const gameStage = {
+  LOBBY: 0,
+  PROMPT: 1,
+  VOTE: 2,
+  RESULTS: 3,
+};
+
+export const gameStageURL = (stage, code) => {
+  // "lobby",
+  // "prompt",
+  // "vote",
+  // "results",
+  return "/game/" + Object.keys(gameStage)[stage].toLowerCase() + "/" + code;
+};

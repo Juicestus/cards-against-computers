@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { loadLocalData, registerGameLoop, getGameLoop } from "../util";
+import { loadLocalData, registerGameLoop, getGameLoop, gameStage, gameStageURL } from "../util";
 import { queryBackend, queryBackendOnErr, startPinging } from "../net";
 import { NavLink } from "react-router-dom";
 import { Card } from "react-bootstrap";
@@ -52,6 +52,10 @@ const Lobby = () => {
           },
           (content) => {
             setGameData(content);
+
+            if (content["stage"] !== gameStage.LOBBY) {
+              navigate(gameStageURL(content["stage"], code));
+            }
           },
           (unpacked) => {
             if (unpacked.code === 2) {
@@ -120,7 +124,7 @@ const Lobby = () => {
         privateKey: localData.privateKey,
       },
       (content) => {
-        navigate("/game/" + code);
+        navigate("/play/" + code);
       }
     );
   };

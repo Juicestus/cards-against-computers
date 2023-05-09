@@ -1,5 +1,5 @@
 import { Carousel, Button } from "react-bootstrap";
-import Card from "../components/Card";
+import Card from "./Card";
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 

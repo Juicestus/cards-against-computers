@@ -91,7 +91,7 @@ export const createNewGame = async (hostName) => {
     players: players,
     host: player.name,
     round: 0,
-    stage: 0,
+    stage: gameStage.LOBBY,
     prompt: "",
     unusedPrompts: [],
     unusedResponses: [],
@@ -140,6 +140,14 @@ export const joinGame = async (id, name) => {
     privateKey: player.key,
   });
 };
+
+export const gameStage = {
+  LOBBY: 0,
+  PROMPT: 1,
+  VOTE: 2,
+  RESULTS: 3,
+};
+
 
 export const getGameDataAsPlayer = async (id, name, privateKey) => {
   const gameRef = doc(db, "games", id);
@@ -215,9 +223,17 @@ export const startGame = async (id, name, privateKey) => {
   const data = (await getDoc(gameRef)).data();
 
   if (data === undefined) return wrapErr(errs.UNDEFINED_GAME_DATA);
-
+ 
   const players = data["players"];
+
+  if (Object.keys(players).length < 3) {
+    return wrapErr(errs.NOT_ENOUGH_PLAYERS)
+  }
+
   if (Object.keys(players).includes(name)) {
+    if (name !== data["host"]) {
+      return wrapErr(errs.INVALID_PERMISSIONS);
+    }
     if (players[name].key !== privateKey) {
       return wrapErr(errs.INVALID_PRIVATE_KEY);
     }
@@ -225,8 +241,13 @@ export const startGame = async (id, name, privateKey) => {
     return wrapErr(errs.PLAYER_NOT_FOUND);
   }
 
-  if (Object.keys(players).length < 3) {
-    return wrapErr(errs.NOT_ENOUGH_PLAYERS)
+  if (data["stage"] !== gameStage.LOBBY) {
+    return wrapErr(errs.UNDEFINED_GAME_DATA);
   }
 
+  await updateDoc(gameRef, {
+    stage: gameStage.PROMPT,
+  });
+
+  return wrapOK({});
 }
