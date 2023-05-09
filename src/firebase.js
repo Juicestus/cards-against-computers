@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import fs from "fs";
 import path from "path";
 
-import { wrapOK, wrapErr } from "./routes.js";
+import { wrapOK, wrapErr, errors as errs } from "./routes.js";
 
 import {
   getFirestore,
@@ -13,6 +13,7 @@ import {
   updateDoc,
   arrayUnion,
   getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 
 import { fileURLToPath } from "url";
@@ -65,6 +66,7 @@ const createPlayer = (name) => {
     key: createPrivateKey(),
     score: 0,
     hand: [],
+    lastPing: Date.now(),
   };
 };
 
@@ -73,7 +75,7 @@ export const createNewGame = async (hostName) => {
   const player = createPlayer(hostName);
 
   if (!nameValid(hostName)) {
-    return wrapErr("Name is not valid");
+    return wrapErr(errs.INVALID_NAME);
   }
 
   // This is why we should be using typescript!
@@ -105,20 +107,24 @@ export const createNewGame = async (hostName) => {
 export const joinGame = async (id, name) => {
   const gameRef = doc(db, "games", id);
   if (!(await gameExists(id))) {
-    return wrapErr("Game does not exist");
+    return wrapErr(errs.GAME_NOT_FOUND);
   }
 
   const data = (await getDoc(gameRef)).data();
 
   const players = data["players"];
-  for (const player of Object.keys(players)) {
-    if (player.name === name) {
-      return wrapErr("Name already taken");
+  const playerNames = Object.keys(players);
+  if (playerNames.length >= 6) {
+    return wrapErr(errs.GAME_FULL);
+  }
+  for (const playerName of playerNames) {
+    if (playerName === name) {
+      return wrapErr(errs.NAME_TAKEN);
     }
   }
 
   if (!nameValid(name)) {
-    return wrapErr("Name is not valid");
+    return wrapErr(errs.INVALID_NAME);
   }
 
   const player = createPlayer(name);
@@ -138,18 +144,20 @@ export const joinGame = async (id, name) => {
 export const getGameDataAsPlayer = async (id, name, privateKey) => {
   const gameRef = doc(db, "games", id);
   if (!(await gameExists(id))) {
-    return wrapErr("Game does not exist");
+    return wrapErr(errs.GAME_NOT_FOUND);
   }
 
   const data = (await getDoc(gameRef)).data();
 
+  await (async () => { data !== undefined })();
+
   const players = data["players"];
   if (Object.keys(players).includes(name)) {
     if (players[name].key !== privateKey) {
-      return wrapErr("Incorrect private key");
+      return wrapErr(errs.INVALID_PRIVATE_KEY);
     }
   } else {
-    return wrapErr("Player does not exist");
+    return wrapErr(errs.PLAYER_NOT_FOUND);
   }
 
   data["players"] = removePrivateKeys(players);
@@ -162,4 +170,63 @@ export const removePrivateKeys = (players) => {
     delete players[name].privateKey;
   });
   return players;
+}
+
+export const leaveGame = async (id, name, privateKey) => {
+  const gameRef = doc(db, "games", id);
+  if (!(await gameExists(id))) {
+    return wrapErr(errs.GAME_NOT_FOUND);
+  }
+
+  const data = (await getDoc(gameRef)).data();
+
+  if (data === undefined) return wrapErr(errs.UNDEFINED_GAME_DATA);
+
+  const players = data["players"];
+  if (Object.keys(players).includes(name)) {
+    if (players[name].key !== privateKey) {
+      return wrapErr(errs.INVALID_PRIVATE_KEY);
+    }
+  } else {
+    return wrapErr(errs.PLAYER_NOT_FOUND);
+  }
+
+  delete players[name];
+  
+  if (Object.keys(players).length === 0) {
+    await deleteDoc(gameRef);
+  } else if (name === data["host"]) {
+    await deleteDoc(gameRef);
+  } else {
+    await updateDoc(gameRef, {
+      players: players,
+    });
+  }
+
+  return wrapOK({});
+}
+
+export const startGame = async (id, name, privateKey) => {
+  const gameRef = doc(db, "games", id);
+  if (!(await gameExists(id))) {
+    return wrapErr(errs.GAME_NOT_FOUND);
+  }
+
+  const data = (await getDoc(gameRef)).data();
+
+  if (data === undefined) return wrapErr(errs.UNDEFINED_GAME_DATA);
+
+  const players = data["players"];
+  if (Object.keys(players).includes(name)) {
+    if (players[name].key !== privateKey) {
+      return wrapErr(errs.INVALID_PRIVATE_KEY);
+    }
+  } else {
+    return wrapErr(errs.PLAYER_NOT_FOUND);
+  }
+
+  if (Object.keys(players).length < 3) {
+    return wrapErr(errs.NOT_ENOUGH_PLAYERS)
+  }
+
 }

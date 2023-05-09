@@ -1,6 +1,7 @@
 export const bindInput = (callback) => {
     return e => {
         e.target.value = e.target.value.toUpperCase();
+        e.target.value = e.target.value.replace(/[^A-Z0-9]/g, "");
         callback(e.target.value);
     }
 }
@@ -18,3 +19,11 @@ export const loadLocalData = () => {
     privateKey: localStorage.getItem("privateKey"),
   };
 };
+
+export const registerGameLoop = (interval) => {
+    localStorage.setItem("gameLoop", interval);
+}
+
+export const getGameLoop = () => {
+    return localStorage.getItem("gameLoop");
+}

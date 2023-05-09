@@ -8,7 +8,7 @@ import Create from "./pages/Create";
 import Join from "./pages/Join";
 import Lobby from "./pages/Lobby";
 import 'bootstrap/dist/css/bootstrap.css';
-
+import leaveGame from "./pages/Lobby";
 
 ReactDOM.render(
   <Router>
@@ -18,6 +18,7 @@ ReactDOM.render(
       <Route path="/join" element={<Join />} />
       <Route path="/game/:id" element={<Lobby />} />
       <Route path="/play/" element={<Play />} />
+
     </Routes>
   </Router>,
 
