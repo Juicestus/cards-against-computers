@@ -12,10 +12,10 @@ const Home = () => {
       </h4>
 
       <div className="home-button-container">
-        <Button href="/create" className="home-big-button">
+        <Button href="/create" className="home-big-button" style ={{display: "flex"}}>
           Create Game
         </Button>
-        <Button href="/join" className="home-big-button">
+        <Button href="/join" className="home-big-button" style ={{display: "flex"}}>
           Join Game
         </Button>
       </div>
