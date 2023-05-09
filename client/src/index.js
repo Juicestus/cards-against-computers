@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import Create from "./pages/Create";
 import Join from "./pages/Join";
 import Lobby from "./pages/Lobby";
+import 'bootstrap/dist/css/bootstrap.css';
+
 
 ReactDOM.render(
   <Router>

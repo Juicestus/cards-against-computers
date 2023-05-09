@@ -1,5 +1,7 @@
 body {
-  background-color: black;
+  background-color: black !important;
+  overflow: none;
+  height: 100%;
 }
 
 h1,
@@ -31,6 +33,9 @@ p {
   line-height: 4.5em;
   margin-top: 1em;
   border-radius: 0.1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .home-button-container {
@@ -157,7 +162,7 @@ p {
   color: black;
   height: 60vh;
   text-align: center;
-  margin: 1.5em;
+  margin: 2em;
   margin-top: 1em;
 }
 
@@ -167,6 +172,7 @@ p {
   align-items: center;
   margin: 0.5em;
   padding: 15px;
+  text-align: center;
 }
 
 .small-card-img {
@@ -190,4 +196,13 @@ p {
   font-size: 1em;
   font-weight: bold;
   margin-left: 0.3em;
+}
+
+.carousel-indicators {
+  bottom: -.8em !important;
+  position: absolute !important;
+}
+
+.carousel-control-next, .carousel-control-prev {
+  margin: -.8em !important;
 }

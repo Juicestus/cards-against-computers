@@ -1,8 +1,9 @@
 import { Carousel, Button } from "react-bootstrap";
 import Card from "../components/Card";
 import { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
+
 const Play = () => {
-  const [index, setIndex] = useState(0);
   const [answerCards, setAnswerCards] = useState([
     "7 dollars and a Popeyes biscuit",
     "The 3/5ths Compromise",
@@ -17,17 +18,6 @@ const Play = () => {
   const [questionCard, setQuestionCard] = useState(0);
 
   useEffect(() => {
-    const statusKeyboardInput = (e) => {
-      if (e.keyCode === 39)
-        setIndex(Math.min(index + 1, answerCards.length - 1));
-      else if (e.keyCode === 37) setIndex(Math.max(0, index - 1));
-    };
-
-    window.addEventListener("keydown", statusKeyboardInput);
-    return () => window.removeEventListener("keydown", statusKeyboardInput);
-  });
-
-  useEffect(() => {
     setQuestionCard(
       questionCards[Math.floor(Math.random() * questionCards.length)]
     );
@@ -35,14 +25,12 @@ const Play = () => {
 
   return (
     <div>
-      <h1 className="prompt">{questionCard}{" "} _____.</h1>
+      <h2 className="create-join-back">
+        <NavLink to="/">{"←"}</NavLink>
+      </h2>
+      <h1 className="prompt">{questionCard} _____.</h1>
       <div className="card-carousel">
-        <Carousel
-          interval={null}
-          controls={false}
-          activeIndex={index}
-          slide={false}
-        >
+        <Carousel interval={null}>
           {answerCards.map((card) => (
             <Carousel.Item>
               <Card text={card} />
@@ -56,7 +44,7 @@ const Play = () => {
             marginTop: "1em",
           }}
         >
-          <Button>Select?</Button>
+          <Button>Submit</Button>
         </div>
       </div>
     </div>
