@@ -45,9 +45,9 @@ const cachedGames = loadFromFirebase();
 const updateCachedDoument = (doc) => {
   cachedGames[doc.id] = doc.data();
 
-  console.log("\n\nBEGIN DATABASE UPDATE\n");
-  console.log(cachedGames);
-  console.log("\nEND DATABASE UPDATE\n\n");
+//   console.log("\n\nBEGIN DATABASE UPDATE\n");
+//   console.log(cachedGames);
+//   console.log("\nEND DATABASE UPDATE\n\n");
 };
 
 const getDoumentData = async (id) => {

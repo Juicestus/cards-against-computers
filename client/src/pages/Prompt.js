@@ -29,7 +29,7 @@ const Prompt = () => {
   }, [code, setGameData]);
 
   const submitHandler = (response) => {
-    // todo: implement 
+    console.log(response)
   };
 
   const createBody = () => {
@@ -41,8 +41,7 @@ const Prompt = () => {
         <h1 className="prompt">Waiting for players to submit responses.</h1>
       </div>);
     } else {
-      console.log(gameData["players"]);
-      return <Play prompt={gameData["prompt"]} responses={gameData["players"][me]["hand"]} showButtons={true} onSubmit={submitHandler}/>
+      return <Play prompt={gameData["prompt"]} responses={gameData["players"][me]["hand"]} showButtons={true} submitConsumer={submitHandler}/>
     }
   }
 

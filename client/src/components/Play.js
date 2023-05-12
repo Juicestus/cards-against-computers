@@ -4,12 +4,24 @@ import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
 const Play = (props) => {
+
+  const [sectedIndex, setSelectedIndex] = useState(0);
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    setCards(Object.values(props.responses));
+  }, [props.responses, setCards]);
+
+  const onSubmit = () => {
+    props.submitConsumer(cards[sectedIndex]);
+  };
+
   return (
     <div>
       <h1 className="prompt">{props.prompt}.</h1>
       <div className="card-carousel">
-        <Carousel interval={null} className="card-carousel">
-          {Object.entries(props.responses).map(([key, response]) => (
+        <Carousel interval={null} className="card-carousel" onSlide={setSelectedIndex}>
+          {cards.map(response => (
             <Carousel.Item>
               <Card text={response} />
             </Carousel.Item>
@@ -23,7 +35,7 @@ const Play = (props) => {
             marginTop: "1em",
           }}
         >
-          {props.showButtons ? <Button onClick={props.onSubmit}>Submit</Button> : <div></div>}
+          {props.showButtons ? <Button onClick={onSubmit}>Submit</Button> : <div></div>}
         </div>
       </div>
     </div>
