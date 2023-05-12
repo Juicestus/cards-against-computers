@@ -31,7 +31,7 @@ const Lobby = () => {
     return (
       <>
         <h2 className="lobby-players-label">Players.</h2>
-        {Object.entries(players).map(([name, player]) => {
+        {Object.keys(players).sort().map((name) => {
           const classes =
             "lobby-card" + (name === host ? " lobby-host-color" : "");
           return (
