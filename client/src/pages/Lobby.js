@@ -1,75 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { loadLocalData, registerGameLoop, getGameLoop, gameStage, gameStageURL } from "../util";
-import { queryBackend, queryBackendOnErr, startPinging } from "../net";
+import { loadLocalData, registerGameLoop, getGameLoop, gameStage, gameStageURL, checkCorrectGame } from "../util";
+import { queryBackend, queryBackendOnErr, startPinging, instantiateGameUpdater, leaveGame } from "../net";
 import { NavLink } from "react-router-dom";
 import { Card } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 
-const leaveGame = () => {
-  clearInterval(getGameLoop());
-
-  const localData = loadLocalData();
-
-  queryBackend(
-    "leaveGame",
-    {
-      id: localData.gameID,
-      name: localData.userName,
-      privateKey: localData.privateKey,
-    },
-    (content) => {
-    }
-  ); 
-}
-
 const Lobby = () => {
-
-  window.addEventListener('beforeunload', e => leaveGame());
+  const [autoLeaverActive, setAutoLeaverActive] = useState(true);
+  // window.addEventListener('beforeunload', e => {
+  //   if (autoLeaverActive)
+  //     leaveGame();
+  // });
 
   const navigate = useNavigate();
-
   const code = useParams().id;
-
   const [gameData, setGameData] = useState({});
 
   useEffect(() => {
-    const localData = loadLocalData();
-
-    if (localData.gameID !== code) {
-      alert("You are not part of this game!");
-      navigate("/");
-    }
-
-    setTimeout(() => {
-      const inteval = setInterval(() => {
-        queryBackendOnErr(
-          "getGameData",
-          {
-            id: code,
-            name: localData.userName,
-            privateKey: localData.privateKey,
-          },
-          (content) => {
-            setGameData(content);
-
-            if (content["stage"] !== gameStage.LOBBY) {
-              navigate(gameStageURL(content["stage"], code));
-            }
-          },
-          (unpacked) => {
-            if (unpacked.code === 2) {
-              alert("Host left.")
-              navigate("/");
-              leaveGame();
-            }
-            navigate("/");
-           }
-        );
-      }, 1000);
-      registerGameLoop(inteval);
-    }, 0);
-    
+    checkCorrectGame(code, navigate);
+    instantiateGameUpdater(gameStage.LOBBY, setGameData, navigate, setAutoLeaverActive); 
   }, [code, setGameData]);
 
   const userListElements = () => {

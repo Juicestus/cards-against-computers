@@ -14,6 +14,7 @@ import {
   arrayUnion,
   getDocs,
   deleteDoc,
+  onSnapshot,
 } from "firebase/firestore";
 
 import { fileURLToPath } from "url";
@@ -27,14 +28,29 @@ const firebaseConfig = JSON.parse(fs.readFileSync(jsonPath).toString());
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
+// todo: switch to an actual local database
+const cachedGames = {};
+
+export const updateCachedDoument = (doc) => {
+  cachedGames[doc.id] = doc.data();
+};
+
+export const getDoumentData = async (id) => {
+  if (cachedGames[id] === undefined) {
+    const gameRef = doc(db, "games", id);
+    const data = (await getDoc(gameRef)).data();
+    cachedGames[id] = data;
+    // onSnapshot(gameRef, updateCachedDoument);
+  }
+  return structuredClone(cachedGames[id]);
+}
+
 export const gameExists = async (id) => {
-  return (await getActiveGames()).includes(id);
+  return cachedGames[id] !== undefined;
 };
 
 export const getActiveGames = async () => {
-  const gamesRef = collection(db, "games");
-  const gamesSnap = await getDocs(gamesRef);
-  return gamesSnap.docs.map((doc) => doc.id);
+  return Object.keys(cachedGames);
 };
 
 // Right now, all names are valid, but this may change later
@@ -65,10 +81,17 @@ const createPlayer = (name) => {
     name: name,
     key: createPrivateKey(),
     score: 0,
-    hand: [],
-    lastPing: Date.now(),
-  };
+    hand: {},
+   };
 };
+
+const randomStringTestMap = (len) => {
+  const arr = {};
+  for (let i = 0; i < len; i++) {
+    arr[i] = createRandomHexString(6);
+  }
+  return arr;
+}
 
 export const createNewGame = async (hostName) => {
   const id = await createID();
@@ -85,17 +108,29 @@ export const createNewGame = async (hostName) => {
 
   const players = {};
   players[player.name] = player;
-
-  setDoc(gameRef, {
+    
+  const initial = {
     id: id,
     players: players,
     host: player.name,
     round: 0,
     stage: gameStage.LOBBY,
     prompt: "",
-    unusedPrompts: [],
-    unusedResponses: [],
-  });
+    judge: "",
+    responses: {},
+    // unusedPrompts: {},
+    unusedPrompts: randomStringTestMap(25),
+    // unusedResponses: {},
+    unusedResponses: randomStringTestMap(100),
+    roundsToWin: 5,
+    cardsInHand: 7,
+  };
+
+  setDoc(gameRef, initial);
+
+  cachedGames[id] = initial;
+
+  onSnapshot(gameRef, updateCachedDoument);
 
   return wrapOK({
     id: id,
@@ -148,14 +183,15 @@ export const gameStage = {
   RESULTS: 3,
 };
 
-
 export const getGameDataAsPlayer = async (id, name, privateKey) => {
   const gameRef = doc(db, "games", id);
+
   if (!(await gameExists(id))) {
     return wrapErr(errs.GAME_NOT_FOUND);
   }
 
-  const data = (await getDoc(gameRef)).data();
+  // const data = (await getDoc(gameRef)).data();
+  const data = await getDoumentData(id);
 
   await (async () => { data !== undefined })();
 
@@ -175,7 +211,7 @@ export const getGameDataAsPlayer = async (id, name, privateKey) => {
 
 export const removePrivateKeys = (players) => {
   Object.keys(players).forEach((name) => {
-    delete players[name].privateKey;
+    delete players[name].key;
   });
   return players;
 }
@@ -245,9 +281,64 @@ export const startGame = async (id, name, privateKey) => {
     return wrapErr(errs.UNDEFINED_GAME_DATA);
   }
 
-  await updateDoc(gameRef, {
-    stage: gameStage.PROMPT,
-  });
+  await moveFromLobbyToGame(gameRef);
 
   return wrapOK({});
 }
+
+export const removeRandomEntry = (map) => {
+  const keys = Object.keys(map);
+  const key = keys[Math.floor(Math.random() * keys.length)];
+  const value = map[key];
+  delete map[key];
+  return [key, value];
+}
+
+export const moveFromLobbyToGame = async (gameRef) => {
+  const data = (await getDoc(gameRef)).data();
+
+  const cardsInHand = data["cardsInHand"];
+  const unusedPrompts = data["unusedPrompts"];
+  const unusedResponses = data["unusedResponses"];
+  const round = data["round"];
+  const players = data["players"];
+
+  const judge = Object.keys(players)[round % Object.keys(players).length];
+
+  const [index, prompt] = removeRandomEntry(unusedPrompts);
+
+  for (const name of Object.keys(players)) {
+    for (let i = 0; i < cardsInHand; i++) {
+      const [index, response] = removeRandomEntry(unusedResponses);
+      players[name]["hand"][index] = response;
+    }
+  }
+
+
+  updateDoc(gameRef, {
+    stage: gameStage.PROMPT,
+    judge: judge,
+    prompt: prompt,
+    unusedPrompts: unusedPrompts,
+    unusedResponses: unusedResponses,
+    players: players,
+    round: round + 1,
+  });
+}
+
+// export const advanceGame = async (gameRef) => {
+//   const data = (await getDoc(gameRef)).data();
+
+//   if (stage === gameStage.LOBBY) {
+//     for (const name of Object.keys(players)) {
+
+//     }
+
+//     await updateDoc(gameRef, {
+//       stage: gameStage.PROMPT,
+//     });
+
+  
+//       // judge: Object.keys(players)[round % Object.keys(players).length],
+//     });
+ 
