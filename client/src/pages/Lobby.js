@@ -7,11 +7,9 @@ import { Card } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 
 const Lobby = () => {
-  const [autoLeaverActive, setAutoLeaverActive] = useState(true);
-  // window.addEventListener('beforeunload', e => {
-  //   if (autoLeaverActive)
-  //     leaveGame();
-  // });
+  window.addEventListener('beforeunload', e => {
+    leaveGame();
+  });
 
   const navigate = useNavigate();
   const code = useParams().id;
@@ -19,7 +17,7 @@ const Lobby = () => {
 
   useEffect(() => {
     checkCorrectGame(code, navigate);
-    instantiateGameUpdater(gameStage.LOBBY, setGameData, navigate, setAutoLeaverActive); 
+    instantiateGameUpdater(gameStage.LOBBY, setGameData, navigate); 
   }, [code, setGameData]);
 
   const userListElements = () => {

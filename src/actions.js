@@ -96,6 +96,7 @@ const createPlayer = (name) => {
     key: createPrivateKey(),
     score: 0,
     hand: {},
+    removeQueded: false,
    };
 };
 
@@ -217,6 +218,13 @@ export const getGameDataAsPlayer = async (id, name, privateKey) => {
     return wrapErr(errs.PLAYER_NOT_FOUND);
   }
 
+
+  players[name]["removeQueded"] = false;
+
+  updateDoc(gameRef, {
+    players: players, 
+  });
+
   data["players"] = removePrivateKeys(players);
 
   return wrapOK(data);
@@ -248,20 +256,45 @@ export const leaveGame = async (id, name, privateKey) => {
     return wrapErr(errs.PLAYER_NOT_FOUND);
   }
 
-  delete players[name];
-  
-  if (Object.keys(players).length === 0) {
-    await deleteDoc(gameRef);
-  } else if (name === data["host"]) {
-    await deleteDoc(gameRef);
-  } else {
-    await updateDoc(gameRef, {
-      players: players,
-    });
-  }
+  data["players"][name]["removeQueded"] = true;
+
+  updateDoc(gameRef, {
+    players: data["players"]
+  });
+
+  setTimeout(createRemoveUserTimeout(id, name), 5e3);
 
   return wrapOK({});
 }
+
+
+export const createRemoveUserTimeout = (id, name) => {
+  return async () => {
+    const gameRef = doc(db, "games", id);
+    if (!(await gameExists(id))) {
+      return wrapErr(errs.GAME_NOT_FOUND);
+    }
+
+    const data = await getDoumentData(id);
+    const players = data["players"];
+
+    if (players[name] == undefined) return;
+    if (players[name]["removeQueded"] === false) return;
+
+    delete players[name];
+
+    if (Object.keys(players).length === 0) {
+      await deleteDoc(gameRef);
+    } else if (name === data["host"]) {
+      await deleteDoc(gameRef);
+    } else {
+      await updateDoc(gameRef, {
+        players: players,
+      });
+    }
+  }
+}
+
 
 export const startGame = async (id, name, privateKey) => {
   const gameRef = doc(db, "games", id);

@@ -13,11 +13,9 @@ import { Button, Card } from "react-bootstrap";
 import Play from "../components/Play";
 
 const Prompt = () => {
-  const [autoLeaverActive, setAutoLeaverActive] = useState(true);
-  // window.addEventListener('beforeunload', e => {
-  //   if (autoLeaverActive)
-  //     leaveGame();
-  // });
+  window.addEventListener('beforeunload', e => {
+    leaveGame();
+  });
 
   const navigate = useNavigate();
   const code = useParams().id;
@@ -25,7 +23,7 @@ const Prompt = () => {
 
   useEffect(() => {
     checkCorrectGame(code, navigate);
-    instantiateGameUpdater(gameStage.PROMPT, setGameData, navigate, setAutoLeaverActive); 
+    instantiateGameUpdater(gameStage.PROMPT, setGameData, navigate); 
   }, [code, setGameData]);
 
   const submitHandler = (response) => {

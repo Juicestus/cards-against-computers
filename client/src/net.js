@@ -44,7 +44,7 @@ export const queryBackendOnErr = (endpoint, params, callback, onError) => {
     });
 };
 
-export const instantiateGameUpdater = (stage, setGameData, navigate, setAutoLeaverActive) => {
+export const instantiateGameUpdater = (stage, setGameData, navigate) => {
   const localData = loadLocalData();
   setTimeout(() => {
     const inteval = setInterval(() => {
@@ -59,9 +59,6 @@ export const instantiateGameUpdater = (stage, setGameData, navigate, setAutoLeav
           setGameData(content);
 
           if (content["stage"] !== stage) {
-            if (setAutoLeaverActive !== undefined) {
-              setAutoLeaverActive(false);
-            }
             navigate(gameStageURL(content["stage"], localData.gameID));
           }
         },
