@@ -35,12 +35,9 @@ const Join = () => {
         <h2 className="create-join-back">
           <NavLink to="/">{"←"}</NavLink>
         </h2>
-        <h1 className="create-join-heading">
-          Join a Game.
-        </h1>
+        <h1 className="create-join-heading">Join a Game.</h1>
       </div>
       <div className="create-join-big-container">
-
         <h4 className="create-join-label">Game code.</h4>
         <input
           type="text"
@@ -52,7 +49,9 @@ const Join = () => {
         />
 
         <br></br>
-        <h4 className="create-join-label">Your name.</h4>
+        <h4 className="create-join-label" style={{ marginTop: "1em" }}>
+          Your name.
+        </h4>
         <input
           type="text"
           id="name"
@@ -63,10 +62,11 @@ const Join = () => {
         />
         <br></br>
         <br></br>
-        <Button className="create-join-big-button" onClick={submitHandler}>Join Game</Button>
+        <Button className="create-join-big-button" onClick={submitHandler}>
+          Join Game
+        </Button>
       </div>
     </div>
-
   );
 };
 

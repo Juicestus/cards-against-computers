@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-
+import "../styles/index.css"
 const Home = () => {
   return (
     <div className="page">
@@ -12,10 +12,18 @@ const Home = () => {
       </h4>
 
       <div className="home-button-container">
-        <Button href="/create" className="home-big-button" style ={{display: "flex"}}>
+        <Button
+          href="/create"
+          className="home-big-button"
+          style={{ display: "flex"}}
+        >
           Create Game
         </Button>
-        <Button href="/join" className="home-big-button" style ={{display: "flex"}}>
+        <Button
+          href="/join"
+          className="home-big-button"
+          style={{ display: "flex" }}
+        >
           Join Game
         </Button>
       </div>
