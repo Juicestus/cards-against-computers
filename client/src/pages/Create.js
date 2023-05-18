@@ -8,7 +8,6 @@ import { bindInput } from "../util";
 import { NavLink } from "react-router-dom";
 
 const Create = () => {
-
   const [name, setName] = useState("");
 
   const navigate = useNavigate();
@@ -34,13 +33,11 @@ const Create = () => {
         <h2 className="create-join-back">
           <NavLink to="/">{"←"}</NavLink>
         </h2>
-        <h1 className="create-join-heading">
-          Create a Game.
-        </h1>
+        <h1 className="create-join-heading">Create a Game.</h1>
       </div>
-      <div className="create-join-big-container">
+      <div className="create-join-big-container" >
         <h4 className="create-join-label">Your name.</h4>
-        <br/>
+        <br />
         <input
           type="text"
           id="name"
@@ -51,7 +48,9 @@ const Create = () => {
         />
         <br></br>
         <br></br>
-        <Button className="create-join-big-button" onClick={submitHandler}>Create Game</Button>
+        <Button className="create-join-big-button" onClick={submitHandler}>
+          Create Game
+        </Button>
       </div>
     </div>
   );

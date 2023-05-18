@@ -1,5 +1,4 @@
 import express from "express";
-import * as firebaseActions from "./firebase.js";
 import cors from "cors";
 import * as routes from "./routes.js";
 

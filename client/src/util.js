@@ -7,25 +7,32 @@ export const bindInput = (callback) => {
 }
 
 export const saveLocalData = (id, name, privateKey) => {
-  localStorage.setItem("userName", name);
-  localStorage.setItem("gameID", id);
-  localStorage.setItem("privateKey", privateKey);
+  sessionStorage.setItem("userName", name);
+  sessionStorage.setItem("gameID", id);
+  sessionStorage.setItem("privateKey", privateKey);
 };
 
 export const loadLocalData = () => {
   return {
-    userName: localStorage.getItem("userName"),
-    gameID: localStorage.getItem("gameID"),
-    privateKey: localStorage.getItem("privateKey"),
+    userName: sessionStorage.getItem("userName"),
+    gameID: sessionStorage.getItem("gameID"),
+    privateKey: sessionStorage.getItem("privateKey"),
   };
 };
 
+export const checkCorrectGame = (code, navigate) => {
+ if (loadLocalData().gameID !== code) {
+    alert("You are not part of this game!");
+    navigate("/");
+  }
+};
+
 export const registerGameLoop = (interval) => {
-    localStorage.setItem("gameLoop", interval);
+    sessionStorage.setItem("gameLoop", interval);
 }
 
 export const getGameLoop = () => {
-    return localStorage.getItem("gameLoop");
+    return sessionStorage.getItem("gameLoop");
 }
 
 export const gameStage = {

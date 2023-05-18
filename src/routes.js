@@ -1,4 +1,4 @@
-import * as firebaseActions from "./firebase.js";
+import * as actions from "./actions.js";
 import express from "express";
 
 const err = (code, msg) => ({ code: code, msg: msg });
@@ -25,11 +25,11 @@ export const wrapErr = (err) => {
 
 export const gameExists = async (req, res) => {
   const id = req.query.id;
-  res.send({ value: await firebaseActions.gameExists(id) });
+  res.send({ value: await actions.gameExists(id) });
 };
 
 export const getActiveGames = async (req, res) => {
-  res.send(await firebaseActions.getActiveGames());
+  res.send(await actions.getActiveGames());
 };
 
 export const createNewGame = async (req, res) => {
@@ -39,13 +39,13 @@ export const createNewGame = async (req, res) => {
     res.status(400).send();
     return;
   }
-  res.send(await firebaseActions.createNewGame(hostName));
+  res.send(await actions.createNewGame(hostName));
 };
 
 export const joinGame = async (req, res) => {
   const id = req.query.id;
   const name = req.query.name;
-  res.send(await firebaseActions.joinGame(id, name));
+  res.send(await actions.joinGame(id, name));
 };
 
 export const getGameData = async (req, res) => {
@@ -54,7 +54,7 @@ export const getGameData = async (req, res) => {
   const name = req.query.name;
   const privateKey = req.query.privateKey;
 
-  res.send(await firebaseActions.getGameDataAsPlayer(id, name, privateKey));
+  res.send(await actions.getGameDataAsPlayer(id, name, privateKey));
 }
 
 export const leaveGame = async (req, res) => {
@@ -62,7 +62,7 @@ export const leaveGame = async (req, res) => {
   const name = req.query.name;
   const privateKey = req.query.privateKey;
 
-  res.send(await firebaseActions.leaveGame(id, name, privateKey));
+  res.send(await actions.leaveGame(id, name, privateKey));
 }
 
 export const startGame = async (req, res) => {
@@ -71,5 +71,5 @@ export const startGame = async (req, res) => {
   const name = req.query.name;
   const privateKey = req.query.privateKey;
     
-  res.send(await firebaseActions.startGame(id, name, privateKey));
+  res.send(await actions.startGame(id, name, privateKey));
 }

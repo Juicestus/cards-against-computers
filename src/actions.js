@@ -14,6 +14,7 @@ import {
   arrayUnion,
   getDocs,
   deleteDoc,
+  onSnapshot,
 } from "firebase/firestore";
 
 import { fileURLToPath } from "url";
@@ -27,14 +28,43 @@ const firebaseConfig = JSON.parse(fs.readFileSync(jsonPath).toString());
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-export const gameExists = async (id) => {
-  return (await getActiveGames()).includes(id);
+
+const loadFromFirebase = async () => {
+  const gamesRef = collection(db, "games");
+  const gamesSnapshot = await getDocs(gamesRef);
+  const games = {};
+  gamesSnapshot.forEach((doc) => {
+    games[doc.id] = doc.data();
+  });
+  return games;
 };
 
-export const getActiveGames = async () => {
-  const gamesRef = collection(db, "games");
-  const gamesSnap = await getDocs(gamesRef);
-  return gamesSnap.docs.map((doc) => doc.id);
+// todo: switch to an actual local database
+const cachedGames = loadFromFirebase();
+
+const updateCachedDoument = (doc) => {
+  cachedGames[doc.id] = doc.data();
+
+//   console.log("\n\nBEGIN DATABASE UPDATE\n");
+//   console.log(cachedGames);
+//   console.log("\nEND DATABASE UPDATE\n\n");
+};
+
+const getDoumentData = async (id) => {
+  if (cachedGames[id] === undefined) {
+    const gameRef = doc(db, "games", id);
+    const data = (await getDoc(gameRef)).data();
+    cachedGames[id] = data;
+  }
+  return structuredClone(cachedGames[id]);
+}
+
+export const gameExists = async (id) => {
+  return cachedGames[id] !== undefined;
+};
+
+const getActiveGames = async () => {
+  return Object.keys(cachedGames);
 };
 
 // Right now, all names are valid, but this may change later
@@ -65,10 +95,18 @@ const createPlayer = (name) => {
     name: name,
     key: createPrivateKey(),
     score: 0,
-    hand: [],
-    lastPing: Date.now(),
-  };
+    hand: {},
+    removeQueded: false,
+   };
 };
+
+const randomStringTestMap = (len) => {
+  const arr = {};
+  for (let i = 0; i < len; i++) {
+    arr[i] = createRandomHexString(6);
+  }
+  return arr;
+}
 
 export const createNewGame = async (hostName) => {
   const id = await createID();
@@ -85,17 +123,29 @@ export const createNewGame = async (hostName) => {
 
   const players = {};
   players[player.name] = player;
-
-  setDoc(gameRef, {
+    
+  const initial = {
     id: id,
     players: players,
     host: player.name,
     round: 0,
     stage: gameStage.LOBBY,
     prompt: "",
-    unusedPrompts: [],
-    unusedResponses: [],
-  });
+    judge: "",
+    responses: {},
+    // unusedPrompts: {},
+    unusedPrompts: randomStringTestMap(25),
+    // unusedResponses: {},
+    unusedResponses: randomStringTestMap(100),
+    roundsToWin: 5,
+    cardsInHand: 7,
+  };
+
+  setDoc(gameRef, initial);
+
+  cachedGames[id] = initial;
+
+  onSnapshot(gameRef, updateCachedDoument);
 
   return wrapOK({
     id: id,
@@ -110,7 +160,7 @@ export const joinGame = async (id, name) => {
     return wrapErr(errs.GAME_NOT_FOUND);
   }
 
-  const data = (await getDoc(gameRef)).data();
+  const data = await getDoumentData(id);
 
   const players = data["players"];
   const playerNames = Object.keys(players);
@@ -148,14 +198,14 @@ export const gameStage = {
   RESULTS: 3,
 };
 
-
 export const getGameDataAsPlayer = async (id, name, privateKey) => {
   const gameRef = doc(db, "games", id);
+
   if (!(await gameExists(id))) {
     return wrapErr(errs.GAME_NOT_FOUND);
   }
 
-  const data = (await getDoc(gameRef)).data();
+  const data = await getDoumentData(id);
 
   await (async () => { data !== undefined })();
 
@@ -168,6 +218,13 @@ export const getGameDataAsPlayer = async (id, name, privateKey) => {
     return wrapErr(errs.PLAYER_NOT_FOUND);
   }
 
+
+  players[name]["removeQueded"] = false;
+
+  updateDoc(gameRef, {
+    players: players, 
+  });
+
   data["players"] = removePrivateKeys(players);
 
   return wrapOK(data);
@@ -175,7 +232,7 @@ export const getGameDataAsPlayer = async (id, name, privateKey) => {
 
 export const removePrivateKeys = (players) => {
   Object.keys(players).forEach((name) => {
-    delete players[name].privateKey;
+    delete players[name].key;
   });
   return players;
 }
@@ -186,7 +243,7 @@ export const leaveGame = async (id, name, privateKey) => {
     return wrapErr(errs.GAME_NOT_FOUND);
   }
 
-  const data = (await getDoc(gameRef)).data();
+  const data = await getDoumentData(id);
 
   if (data === undefined) return wrapErr(errs.UNDEFINED_GAME_DATA);
 
@@ -199,20 +256,45 @@ export const leaveGame = async (id, name, privateKey) => {
     return wrapErr(errs.PLAYER_NOT_FOUND);
   }
 
-  delete players[name];
-  
-  if (Object.keys(players).length === 0) {
-    await deleteDoc(gameRef);
-  } else if (name === data["host"]) {
-    await deleteDoc(gameRef);
-  } else {
-    await updateDoc(gameRef, {
-      players: players,
-    });
-  }
+  data["players"][name]["removeQueded"] = true;
+
+  updateDoc(gameRef, {
+    players: data["players"]
+  });
+
+  setTimeout(createRemoveUserTimeout(id, name), 5e3);
 
   return wrapOK({});
 }
+
+
+export const createRemoveUserTimeout = (id, name) => {
+  return async () => {
+    const gameRef = doc(db, "games", id);
+    if (!(await gameExists(id))) {
+      return wrapErr(errs.GAME_NOT_FOUND);
+    }
+
+    const data = await getDoumentData(id);
+    const players = data["players"];
+
+    if (players[name] == undefined) return;
+    if (players[name]["removeQueded"] === false) return;
+
+    delete players[name];
+
+    if (Object.keys(players).length === 0) {
+      await deleteDoc(gameRef);
+    } else if (name === data["host"]) {
+      await deleteDoc(gameRef);
+    } else {
+      await updateDoc(gameRef, {
+        players: players,
+      });
+    }
+  }
+}
+
 
 export const startGame = async (id, name, privateKey) => {
   const gameRef = doc(db, "games", id);
@@ -220,7 +302,7 @@ export const startGame = async (id, name, privateKey) => {
     return wrapErr(errs.GAME_NOT_FOUND);
   }
 
-  const data = (await getDoc(gameRef)).data();
+  const data = await getDoumentData(id);
 
   if (data === undefined) return wrapErr(errs.UNDEFINED_GAME_DATA);
  
@@ -245,9 +327,46 @@ export const startGame = async (id, name, privateKey) => {
     return wrapErr(errs.UNDEFINED_GAME_DATA);
   }
 
-  await updateDoc(gameRef, {
-    stage: gameStage.PROMPT,
-  });
+  await moveFromLobbyToGame(id, gameRef);
 
   return wrapOK({});
+}
+
+export const removeRandomEntry = (map) => {
+  const keys = Object.keys(map);
+  const key = keys[Math.floor(Math.random() * keys.length)];
+  const value = map[key];
+  delete map[key];
+  return [key, value];
+}
+
+export const moveFromLobbyToGame = async (id, gameRef) => {
+  const data = await getDoumentData(id);
+
+  const cardsInHand = data["cardsInHand"];
+  const unusedPrompts = data["unusedPrompts"];
+  const unusedResponses = data["unusedResponses"];
+  const round = data["round"];
+  const players = data["players"];
+
+  const judge = Object.keys(players)[round % Object.keys(players).length];
+
+  const [index, prompt] = removeRandomEntry(unusedPrompts);
+
+  for (const name of Object.keys(players)) {
+    for (let i = 0; i < cardsInHand; i++) {
+      const [index, response] = removeRandomEntry(unusedResponses);
+      players[name]["hand"][index] = response;
+    }
+  }
+
+  updateDoc(gameRef, {
+    stage: gameStage.PROMPT,
+    judge: judge,
+    prompt: prompt,
+    unusedPrompts: unusedPrompts,
+    unusedResponses: unusedResponses,
+    players: players,
+    round: round + 1,
+  });
 }
