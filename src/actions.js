@@ -18,6 +18,8 @@ import {
 } from "firebase/firestore";
 
 import { fileURLToPath } from "url";
+import {readFile} from 'fs/promises';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,6 +30,17 @@ const firebaseConfig = JSON.parse(fs.readFileSync(jsonPath).toString());
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
+const getLinesFromFile = async (path) => {
+  const items = (await readFile(path, 'utf8')).split("\n");
+  const map = {};
+  for (let i = 0; i < items.length; i++) {
+    map[i] = items[i];
+  }
+  return map;
+}
+
+const questions = await getLinesFromFile('./cards/questions.txt');
+const responses = await getLinesFromFile('./cards/responses.txt');
 
 const loadFromFirebase = async () => {
   const gamesRef = collection(db, "games");
@@ -133,10 +146,10 @@ export const createNewGame = async (hostName) => {
     prompt: "",
     judge: "",
     responses: {},
-    // unusedPrompts: {},
-    unusedPrompts: randomStringTestMap(25),
-    // unusedResponses: {},
-    unusedResponses: randomStringTestMap(100),
+    unusedPrompts: questions,
+    // unusedPrompts: randomStringTestMap(25),
+    unusedResponses: responses,
+    // unusedResponses: randomStringTestMap(100),
     roundsToWin: 5,
     cardsInHand: 7,
   };

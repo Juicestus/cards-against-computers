@@ -18,7 +18,7 @@ const Play = (props) => {
 
   return (
     <div>
-      <h1 className="prompt">{props.prompt}.</h1>
+      <h1 className="prompt">{props.prompt}</h1>
       <div className="card-carousel">
         <Carousel interval={null} className="card-carousel" onSlide={setSelectedIndex}>
           {cards.map(response => (
