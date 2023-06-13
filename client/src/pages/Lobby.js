@@ -29,11 +29,11 @@ const Lobby = () => {
     return (
       <>
         <h2 className="lobby-players-label">Players.</h2>
-        {Object.keys(players).sort().map((name) => {
+        {Object.keys(players).sort().map((name, index) => {
           const classes =
             "lobby-card" + (name === host ? " lobby-host-color" : "");
           return (
-            <div className={classes}>
+            <div className={classes} key={index}>
               <h2 className="lobby-card-text">
                 {name}
                 {name === host ? "  (host)" : ""}
@@ -71,7 +71,7 @@ const Lobby = () => {
         name: localData.userName,
         privateKey: localData.privateKey,
       },
-      (content) => {
+      () => {
         navigate("/game/prompt/" + code);
       }
     );

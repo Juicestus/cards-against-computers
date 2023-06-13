@@ -28,7 +28,6 @@ const firebaseConfig = JSON.parse(fs.readFileSync(jsonPath).toString());
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-
 const loadFromFirebase = async () => {
   const gamesRef = collection(db, "games");
   const gamesSnapshot = await getDocs(gamesRef);
@@ -45,9 +44,9 @@ const cachedGames = loadFromFirebase();
 const updateCachedDoument = (doc) => {
   cachedGames[doc.id] = doc.data();
 
-//   console.log("\n\nBEGIN DATABASE UPDATE\n");
-//   console.log(cachedGames);
-//   console.log("\nEND DATABASE UPDATE\n\n");
+  //   console.log("\n\nBEGIN DATABASE UPDATE\n");
+  //   console.log(cachedGames);
+  //   console.log("\nEND DATABASE UPDATE\n\n");
 };
 
 const getDoumentData = async (id) => {
@@ -57,7 +56,7 @@ const getDoumentData = async (id) => {
     cachedGames[id] = data;
   }
   return structuredClone(cachedGames[id]);
-}
+};
 
 export const gameExists = async (id) => {
   return cachedGames[id] !== undefined;
@@ -84,10 +83,11 @@ const createID = async () => {
 const createRandomHexString = (length) =>
   [...Array(length)]
     .map(() => Math.floor(Math.random() * 16).toString(16))
-    .join("").toUpperCase();
+    .join("")
+    .toUpperCase();
 
 const createPrivateKey = () => {
-  return createRandomHexString(16)
+  return createRandomHexString(16);
 };
 
 const createPlayer = (name) => {
@@ -96,8 +96,9 @@ const createPlayer = (name) => {
     key: createPrivateKey(),
     score: 0,
     hand: {},
-    removeQueded: false,
-   };
+    removeQueued: false,
+    submittedResponse: "",
+  };
 };
 
 const randomStringTestMap = (len) => {
@@ -106,7 +107,7 @@ const randomStringTestMap = (len) => {
     arr[i] = createRandomHexString(6);
   }
   return arr;
-}
+};
 
 export const createNewGame = async (hostName) => {
   const id = await createID();
@@ -120,7 +121,7 @@ export const createNewGame = async (hostName) => {
 
   const players = {};
   players[player.name] = player;
-    
+
   const initial = {
     id: id,
     players: players,
@@ -135,7 +136,7 @@ export const createNewGame = async (hostName) => {
     // unusedResponses: {},
     unusedResponses: randomStringTestMap(100),
     roundsToWin: 5,
-    cardsInHand: 7,
+    numCardsInHand: 7,
   };
 
   setDoc(gameRef, initial);
@@ -204,7 +205,9 @@ export const getGameDataAsPlayer = async (id, name, privateKey) => {
 
   const data = await getDoumentData(id);
 
-  await (async () => { data !== undefined })();
+  await (async () => {
+    data !== undefined;
+  })();
 
   const players = data["players"];
   if (Object.keys(players).includes(name)) {
@@ -215,24 +218,23 @@ export const getGameDataAsPlayer = async (id, name, privateKey) => {
     return wrapErr(errs.PLAYER_NOT_FOUND);
   }
 
-
-  players[name]["removeQueded"] = false;
+  players[name]["removeQueued"] = false;
 
   updateDoc(gameRef, {
-    players: players, 
+    players: players,
   });
 
   data["players"] = removePrivateKeys(players);
 
   return wrapOK(data);
-}
+};
 
 export const removePrivateKeys = (players) => {
   Object.keys(players).forEach((name) => {
     delete players[name].key;
   });
   return players;
-}
+};
 
 export const leaveGame = async (id, name, privateKey) => {
   const gameRef = doc(db, "games", id);
@@ -246,24 +248,20 @@ export const leaveGame = async (id, name, privateKey) => {
 
   const players = data["players"];
   if (Object.keys(players).includes(name)) {
-    if (players[name].key !== privateKey) {
+    if (players[name].key !== privateKey)
       return wrapErr(errs.INVALID_PRIVATE_KEY);
-    }
-  } else {
-    return wrapErr(errs.PLAYER_NOT_FOUND);
-  }
+  } else return wrapErr(errs.PLAYER_NOT_FOUND);
 
-  data["players"][name]["removeQueded"] = true;
+  data["players"][name]["removeQueued"] = true;
 
   updateDoc(gameRef, {
-    players: data["players"]
+    players: data["players"],
   });
 
   setTimeout(createRemoveUserTimeout(id, name), 5e3);
 
   return wrapOK({});
-}
-
+};
 
 export const createRemoveUserTimeout = (id, name) => {
   return async () => {
@@ -276,22 +274,19 @@ export const createRemoveUserTimeout = (id, name) => {
     const players = data["players"];
 
     if (players[name] == undefined) return;
-    if (players[name]["removeQueded"] === false) return;
+    if (players[name]["removeQueued"] === false) return;
 
     delete players[name];
 
-    if (Object.keys(players).length === 0) {
-      await deleteDoc(gameRef);
-    } else if (name === data["host"]) {
-      await deleteDoc(gameRef);
-    } else {
+    if (Object.keys(players).length === 0) await deleteDoc(gameRef);
+    else if (name === data["host"]) await deleteDoc(gameRef);
+    else {
       await updateDoc(gameRef, {
         players: players,
       });
     }
-  }
-}
-
+  };
+};
 
 export const startGame = async (id, name, privateKey) => {
   const gameRef = doc(db, "games", id);
@@ -302,11 +297,11 @@ export const startGame = async (id, name, privateKey) => {
   const data = await getDoumentData(id);
 
   if (data === undefined) return wrapErr(errs.UNDEFINED_GAME_DATA);
- 
+
   const players = data["players"];
 
   if (Object.keys(players).length < 3) {
-    return wrapErr(errs.NOT_ENOUGH_PLAYERS)
+    return wrapErr(errs.NOT_ENOUGH_PLAYERS);
   }
 
   if (Object.keys(players).includes(name)) {
@@ -327,7 +322,7 @@ export const startGame = async (id, name, privateKey) => {
   await moveFromLobbyToGame(id, gameRef);
 
   return wrapOK({});
-}
+};
 
 export const removeRandomEntry = (map) => {
   const keys = Object.keys(map);
@@ -335,23 +330,23 @@ export const removeRandomEntry = (map) => {
   const value = map[key];
   delete map[key];
   return [key, value];
-}
+};
 
 export const moveFromLobbyToGame = async (id, gameRef) => {
   const data = await getDoumentData(id);
 
-  const cardsInHand = data["cardsInHand"];
+  const numCardsInHand = data["numCardsInHand"];
   const unusedPrompts = data["unusedPrompts"];
   const unusedResponses = data["unusedResponses"];
   const round = data["round"];
   const players = data["players"];
-  
+
   const judge = Object.keys(players)[round % Object.keys(players).length];
 
   const [index, prompt] = removeRandomEntry(unusedPrompts);
 
   for (const name of Object.keys(players)) {
-    for (let i = 0; i < cardsInHand; i++) {
+    for (let i = 0; i < numCardsInHand; i++) {
       const [index, response] = removeRandomEntry(unusedResponses);
       players[name]["hand"][index] = response;
     }
@@ -366,4 +361,43 @@ export const moveFromLobbyToGame = async (id, gameRef) => {
     players: players,
     round: round + 1,
   });
-}
+};
+
+export const submitPlayerResponse = async (
+  id,
+  name,
+  privateKey,
+  submittedResponse
+) => {
+  const gameRef = doc(db, "games", id);
+  const data = await getDoumentData(id);
+
+  let unusedCardResponses = data["unusedResponses"];
+  const players = data["players"];
+  const judge = data["judge"];
+
+  if (!(await gameExists(id))) return wrapErr(errs.GAME_NOT_FOUND);
+
+  if (Object.keys(players).includes(name)) {
+    if (name === judge) return wrapErr(errs.INVALID_PERMISSIONS);
+
+    if (players[name].key !== privateKey)
+      return wrapErr(errs.INVALID_PRIVATE_KEY);
+  } else return wrapErr(errs.PLAYER_NOT_FOUND);
+
+  players[name].submittedResponse = submittedResponse;
+
+  for (let i = 0; i < unusedCardResponses.length; i++) {
+    if (submittedResponse === unusedResponses[i]) {
+      unusedCardResponses.remove(i);
+      break;
+    }
+  }
+
+  updateDoc(gameRef, {
+    players: players,
+    unusedResponses: unusedCardResponses,
+  });
+
+  return wrapOK({});
+};

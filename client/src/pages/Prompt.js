@@ -6,51 +6,84 @@ import {
   getGameLoop,
   gameStage,
   gameStageURL,
-  checkCorrectGame } from "../util";
-import { queryBackend, queryBackendOnErr, startPinging, instantiateGameUpdater, leaveGame } from "../net";
+  checkCorrectGame,
+} from "../util";
+import {
+  queryBackend,
+  queryBackendOnErr,
+  startPinging,
+  instantiateGameUpdater,
+  leaveGame,
+} from "../net";
 import { NavLink } from "react-router-dom";
-import { Button, Card } from "react-bootstrap";
 import Play from "../components/Play";
 
 const Prompt = () => {
-  window.addEventListener('beforeunload', e => {
+  window.addEventListener("beforeunload", (e) => {
     leaveGame();
   });
 
   const navigate = useNavigate();
-  const code = useParams().id;
+  const gameID = useParams().id;
+  const username = loadLocalData().userName;
+  const privateKey = loadLocalData().privateKey;
   const [gameData, setGameData] = useState({});
+  const [successfulSubmission, setSuccessfulSubmission] = useState(null);
 
   useEffect(() => {
-    checkCorrectGame(code, navigate);
-    instantiateGameUpdater(gameStage.PROMPT, setGameData, navigate); 
-  }, [code, setGameData]);
+    checkCorrectGame(gameID, navigate);
+    instantiateGameUpdater(gameStage.PROMPT, setGameData, navigate);
+  }, [gameID, setGameData]);
 
   const submitHandler = (response) => {
-    console.log(response)
+    queryBackend(
+      "/submitPlayerResponse",
+      {
+        id: gameID,
+        name: username,
+        privateKey: privateKey,
+        playerResponse: response,
+      },
+      (data) => {
+        if (data.allGood) setSuccessfulSubmission(true);
+        else setSuccessfulSubmission(false);
+      }
+    );
   };
 
   const createBody = () => {
-    const me = loadLocalData().userName;
     if (gameData["players"] === undefined) {
-      return "";
-    } else if (gameData["judge"] === me) {
-      return (<div>
-        <h1 className="prompt">You are the judge this round. Wait for players to submit responses.</h1>
-      </div>);
+      return "Error: Players undefined.";
+    } else if (username === gameData["judge"]) {
+      return (
+        <div>
+          <h1 className="prompt">
+            You are the judge this round. Wait for players to submit responses.
+          </h1>
+        </div>
+      );
     } else {
-      return <Play prompt={gameData["prompt"]} responses={gameData["players"][me]["hand"]} showButtons={true} submitConsumer={submitHandler}/>
+      return (
+        <Play
+          prompt={gameData["prompt"]}
+          responses={gameData["players"][username]["hand"]}
+          showButtons={true}
+          submitConsumer={submitHandler}
+        />
+      );
     }
-  }
+  };
 
-    return (
+  return (
     <div className="page">
       <div>
         <h2 className="create-join-back">
-          <NavLink to="/" onClick={() => leaveGame()}>{"←"}</NavLink>
+          <NavLink to="/" onClick={() => leaveGame()}>
+            {"←"}
+          </NavLink>
         </h2>
         {createBody()}
-       </div>
+      </div>
     </div>
   );
 };
