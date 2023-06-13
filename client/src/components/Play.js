@@ -27,7 +27,6 @@ const Play = (props) => {
             </Carousel.Item>
           ))}
         </Carousel>
-        {/* wtf does the div below do*/}
         <div 
           style={{
             display: "flex",

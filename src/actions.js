@@ -116,9 +116,6 @@ export const createNewGame = async (hostName) => {
     return wrapErr(errs.INVALID_NAME);
   }
 
-  // This is why we should be using typescript!
-  // fuck off!
-  // https://stackoverflow.com/questions/70731173/firebase-firestoretypeerror-n-indexof-is-not-a-function
   const gameRef = doc(db, "games", id);
 
   const players = {};
@@ -348,7 +345,7 @@ export const moveFromLobbyToGame = async (id, gameRef) => {
   const unusedResponses = data["unusedResponses"];
   const round = data["round"];
   const players = data["players"];
-
+  
   const judge = Object.keys(players)[round % Object.keys(players).length];
 
   const [index, prompt] = removeRandomEntry(unusedPrompts);

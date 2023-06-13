@@ -72,7 +72,7 @@ const Lobby = () => {
         privateKey: localData.privateKey,
       },
       (content) => {
-        navigate("/play/" + code);
+        navigate("/game/prompt/" + code);
       }
     );
   };

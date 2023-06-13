@@ -34,9 +34,9 @@ const Prompt = () => {
     const me = loadLocalData().userName;
     if (gameData["players"] === undefined) {
       return "";
-    } else if (gameData["host"] === me) {
+    } else if (gameData["judge"] === me) {
       return (<div>
-        <h1 className="prompt">Waiting for players to submit responses.</h1>
+        <h1 className="prompt">You are the judge this round. Wait for players to submit responses.</h1>
       </div>);
     } else {
       return <Play prompt={gameData["prompt"]} responses={gameData["players"][me]["hand"]} showButtons={true} submitConsumer={submitHandler}/>
