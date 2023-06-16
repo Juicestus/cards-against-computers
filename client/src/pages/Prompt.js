@@ -30,6 +30,9 @@ const Prompt = () => {
   const [gameData, setGameData] = useState({});
   const [successfulSubmission, setSuccessfulSubmission] = useState(null);
 
+  const players = gameData["players"];
+  const host = gameData["host"];
+
   useEffect(() => {
     checkCorrectGame(gameID, navigate);
     instantiateGameUpdater(gameStage.PROMPT, setGameData, navigate);
@@ -37,7 +40,7 @@ const Prompt = () => {
 
   const submitHandler = (response) => {
     queryBackend(
-      "/submitPlayerResponse",
+      "submitPlayerResponse",
       {
         id: gameID,
         name: username,
@@ -51,15 +54,41 @@ const Prompt = () => {
     );
   };
 
+  console.log(players);
+
   const createBody = () => {
     if (gameData["players"] === undefined) {
-      return "Error: Players undefined.";
+      return "";
     } else if (username === gameData["judge"]) {
       return (
-        <div>
+        <div className="home-button-container">
           <h1 className="prompt">
-            You are the judge this round. Wait for players to submit responses.
+            You are the judge this round. <br />
           </h1>
+
+          {Object.values(players)
+            .sort()
+            .map((player, index) => {
+              return player.name === host ? (
+                <></>
+              ) : (
+                <div
+                  className="lobby-card"
+                  style={
+                    player.submittedResponse !== ""
+                      ? { backgroundColor: "#1ab35d" }
+                      : { backgroundColor: "#b31a1a" }
+                  }
+                  key={index}
+                >
+                  <h2 className="lobby-card-text">
+                    {player.name}
+                    {player.submittedResponse !== "" ? " (" : " (has not "}
+                    submitted)
+                  </h2>
+                </div>
+              );
+            })}
         </div>
       );
     } else {

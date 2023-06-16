@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
 const Play = (props) => {
-
   const [sectedIndex, setSelectedIndex] = useState(0);
   const [cards, setCards] = useState([]);
 
@@ -20,21 +19,32 @@ const Play = (props) => {
     <div>
       <h1 className="prompt">{props.prompt}.</h1>
       <div className="card-carousel">
-        <Carousel interval={null} className="card-carousel" onSlide={setSelectedIndex}>
-          {cards.map(response => (
-            <Carousel.Item>
-              <Card text={response} />
-            </Carousel.Item>
-          ))}
+        <Carousel
+          interval={null}
+          className="card-carousel"
+          onSlide={setSelectedIndex}
+          slide={false}
+        >
+          {cards.map((response, index) => {
+            return (
+              <Carousel.Item key={index}>
+                <Card text={response} />
+              </Carousel.Item>
+            );
+          })}
         </Carousel>
-        <div 
+        <div
           style={{
             display: "flex",
             justifyContent: "center",
             marginTop: "1em",
           }}
         >
-          {props.showButtons ? <Button onClick={onSubmit}>Submit</Button> : <div></div>}
+          {props.showButtons ? (
+            <Button onClick={onSubmit}>Submit</Button>
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
     </div>
