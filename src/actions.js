@@ -137,6 +137,7 @@ export const createNewGame = async (hostName) => {
     unusedResponses: randomStringTestMap(100),
     roundsToWin: 5,
     numCardsInHand: 7,
+    roundLength: 60000 // 1 min
   };
 
   setDoc(gameRef, initial);
@@ -288,7 +289,7 @@ export const createRemoveUserTimeout = (id, name) => {
   };
 };
 
-export const startGame = async (id, name, privateKey) => {
+export const startGame = async (id, name, privateKey, startTime) => {
   const gameRef = doc(db, "games", id);
   if (!(await gameExists(id))) {
     return wrapErr(errs.GAME_NOT_FOUND);
@@ -319,7 +320,7 @@ export const startGame = async (id, name, privateKey) => {
     return wrapErr(errs.UNDEFINED_GAME_DATA);
   }
 
-  await moveFromLobbyToGame(id, gameRef);
+  await moveFromLobbyToGame(id, gameRef, startTime);
 
   return wrapOK({});
 };
@@ -332,7 +333,7 @@ export const removeRandomEntry = (map) => {
   return [key, value];
 };
 
-export const moveFromLobbyToGame = async (id, gameRef) => {
+export const moveFromLobbyToGame = async (id, gameRef, startTime) => {
   const data = await getDoumentData(id);
 
   const numCardsInHand = data["numCardsInHand"];
@@ -360,6 +361,7 @@ export const moveFromLobbyToGame = async (id, gameRef) => {
     unusedResponses: unusedResponses,
     players: players,
     round: round + 1,
+    startTime: startTime
   });
 };
 

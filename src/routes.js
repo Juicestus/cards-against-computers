@@ -70,8 +70,10 @@ export const startGame = async (req, res) => {
   const id = req.query.id;
   const name = req.query.name;
   const privateKey = req.query.privateKey;
+  const startTime = req.query.startTime;
+  const roundLength = req.query.roundLength;
     
-  res.send(await actions.startGame(id, name, privateKey));
+  res.send(await actions.startGame(id, name, privateKey, startTime, roundLength));
 }
 
 export const submitPlayerResponse = async (req, res) => {

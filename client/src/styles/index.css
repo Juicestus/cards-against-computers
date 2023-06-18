@@ -37,7 +37,6 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 .home-button-container {
@@ -163,7 +162,7 @@ p {
   background-color: #fff;
   color: black;
   /* text-align: center; */
-  padding: .0em;
+  padding: 0em;
   padding-left: 1em;
   margin-left: auto;
   margin-right: auto;
@@ -215,4 +214,30 @@ p {
 .carousel-control-next,
 .carousel-control-prev {
   margin: -0.8em !important;
+}
+
+.create-set-round-length {
+  margin-top: 1em;
+  /* display: flex; */
+}
+.create-round-length-setter {
+  display: flex;
+  justify-content: center;
+  margin-top: -1em;
+}
+
+.create-join-button {
+  height: 4em;
+  width: 3.5em;
+  /* margin-top: 1em; */
+}
+
+.create-join-med-input-box {
+  font-size: 2em;
+  height: 2em;
+  line-height: 4.5em;
+  border-radius: 0.3em;
+  padding: 0.5em;
+  text-align: center;
+  min-width: 8em;
 }
