@@ -23,7 +23,6 @@ const Join = () => {
         name: userName,
       },
       (content) => {
-        console.log(content);
         saveLocalData(
           content.id,
           userName,
@@ -31,7 +30,7 @@ const Join = () => {
           content.roundLength,
           content.startTime
         );
-        // navigate("/game/lobby/" + content.id);
+        navigate("/game/lobby/" + content.id);
       }
     );
   };
