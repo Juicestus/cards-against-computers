@@ -249,3 +249,15 @@ p {
   justify-content: center;
   margin-bottom: 1em;
 }
+
+.submitted-heading {
+  display: flex;
+  justify-content: center;
+}
+
+.submitted-sub-heading {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1em;
+}
+

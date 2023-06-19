@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { loadLocalData, registerGameLoop, getGameLoop, gameStage, gameStageURL } from "./util";
+import {
+  loadLocalData,
+  registerGameLoop,
+  getGameLoop,
+  gameStage,
+  gameStageURL,
+} from "./util";
 import { NavLink } from "react-router-dom";
 import { Card } from "react-bootstrap";
 import { Button } from "react-bootstrap";
@@ -28,9 +34,9 @@ export const queryBackendOnErr = (endpoint, params, callback, onError) => {
   const form = createRequestForm(endpoint, params);
   fetch(form)
     .then((response) => {
-      console.log(response);
+      // console.log(response);
       response.json().then((unpacked) => {
-        console.log(unpacked);
+        // console.log(unpacked);
         if (!unpacked.ok) {
           onError(unpacked);
           return;
@@ -40,7 +46,7 @@ export const queryBackendOnErr = (endpoint, params, callback, onError) => {
     })
     .catch((err) => {
       // if (verbose)
-        // alert(err);
+      // alert(err);
     });
 };
 
@@ -64,13 +70,13 @@ export const instantiateGameUpdater = (stage, setGameData, navigate) => {
         },
         (unpacked) => {
           if (unpacked.code === 2) {
-            alert("Host left.")
+            alert("Host left.");
             navigate("/");
             leaveGame();
             window.location.reload();
           }
           navigate("/");
-          }
+        }
       );
     }, 1000);
     registerGameLoop(inteval);
@@ -89,8 +95,6 @@ export const leaveGame = () => {
       name: localData.userName,
       privateKey: localData.privateKey,
     },
-    (content) => {
-    }
-  ); 
-}
-
+    (content) => {}
+  );
+};

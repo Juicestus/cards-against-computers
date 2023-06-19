@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   loadLocalData,
@@ -18,6 +18,7 @@ import {
 import { NavLink } from "react-router-dom";
 import Play from "../components/Play";
 import Timer from "../components/Timer";
+import Submitted from "../components/Submitted";
 
 const Prompt = () => {
   window.addEventListener("beforeunload", (e) => {
@@ -31,7 +32,7 @@ const Prompt = () => {
   const roundLength = loadLocalData().roundLength;
   const [gameData, setGameData] = useState({});
   const startTime = gameData.startTime;
-  const [successfulSubmission, setSuccessfulSubmission] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const players = gameData["players"];
   const host = gameData["host"];
@@ -40,6 +41,12 @@ const Prompt = () => {
     checkCorrectGame(gameID, navigate);
     instantiateGameUpdater(gameStage.PROMPT, setGameData, navigate);
   }, [gameID, setGameData]);
+
+  useEffect(() => {
+    if (Object.keys(gameData).length > 0) {
+      setSubmitted(gameData.players[username].submittedResponse !== "");
+    }
+  }, [gameData]);
 
   const submitHandler = (response) => {
     queryBackend(
@@ -50,9 +57,7 @@ const Prompt = () => {
         privateKey: privateKey,
         playerResponse: response,
       },
-      () => {
-        setSuccessfulSubmission(true);
-      }
+      () => {}
     );
   };
 
@@ -77,13 +82,13 @@ const Prompt = () => {
                 <></>
               ) : (
                 <div
+                  key={index}
                   className="lobby-card"
                   style={
                     player.submittedResponse !== ""
                       ? { backgroundColor: "#1ab35d" }
                       : { backgroundColor: "#b31a1a" }
                   }
-                  key={index}
                 >
                   <h2 className="lobby-card-text">
                     {player.name}
@@ -97,7 +102,12 @@ const Prompt = () => {
         </div>
       );
     } else {
-      return (
+      return submitted ? (
+        <Submitted
+          roundLength={gameData.roundLength}
+          startTime={gameData.startTime}
+        />
+      ) : (
         <Play
           prompt={gameData["prompt"]}
           responses={gameData["players"][username]["hand"]}
