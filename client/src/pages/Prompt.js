@@ -50,9 +50,8 @@ const Prompt = () => {
         privateKey: privateKey,
         playerResponse: response,
       },
-      (data) => {
-        if (data.allGood) setSuccessfulSubmission(true);
-        else setSuccessfulSubmission(false);
+      () => {
+        setSuccessfulSubmission(true);
       }
     );
   };
@@ -61,7 +60,6 @@ const Prompt = () => {
     if (gameData["players"] === undefined) {
       return "";
     } else if (username === gameData["judge"]) {
-      console.log(loadLocalData().roundLength);
       return (
         <div className="home-button-container">
           <h1 className="prompt">
