@@ -24,7 +24,7 @@ p {
   display: flex;
   justify-content: center;
   font-size: 1.3em;
-  margin-left: -5em;
+  margin-left: -6em;
   margin-top: 0.5em;
 }
 
@@ -177,6 +177,7 @@ p {
   margin: 0.5em;
   padding: 15px;
   text-align: center;
+  font-size: 2em;
 }
 
 .small-card-img {
@@ -196,7 +197,7 @@ p {
 }
 
 .card-carousel {
-  margin-top: 6em;
+  margin-top: 3em;
 }
 
 .card-branding-name {
@@ -218,7 +219,7 @@ p {
 
 .create-set-round-length {
   margin-top: 1em;
-  /* display: flex; */
+  margin-bottom: 1em;
 }
 .create-round-length-setter {
   display: flex;
@@ -228,8 +229,7 @@ p {
 
 .create-join-button {
   height: 4em;
-  width: 3.5em;
-  /* margin-top: 1em; */
+  width: 6em;
 }
 
 .create-join-med-input-box {
@@ -239,5 +239,13 @@ p {
   border-radius: 0.3em;
   padding: 0.5em;
   text-align: center;
-  min-width: 8em;
+  min-width: 5em;
+  margin-left: .1em;
+  margin-right: .1em;
+}
+
+.prompt-timer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1em;
 }

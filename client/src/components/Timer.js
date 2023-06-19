@@ -1,7 +1,11 @@
 const Timer = ({ startTime, roundLength }) => {
-    console.log(startTime)
   return (
-   <h1>{Date.now() - (startTime + roundLength)}</h1>
+    <h1>
+      {Math.round(
+        (parseFloat(startTime) + roundLength * 1000 - Date.now()) / 1000
+      ) + " "}{" "}
+      seconds remaining
+    </h1>
   );
 };
 

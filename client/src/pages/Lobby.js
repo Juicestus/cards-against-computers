@@ -77,6 +77,7 @@ const Lobby = () => {
       return;
     }
 
+    const startTime = Date.now();
     const localData = loadLocalData();
     queryBackend(
       "startGame",
@@ -84,6 +85,8 @@ const Lobby = () => {
         id: code,
         name: localData.userName,
         privateKey: localData.privateKey,
+        roundLength: localData.roundLength,
+        startTime: startTime,
       },
       () => {
         navigate("/game/prompt/" + code);

@@ -2,7 +2,7 @@ import { Carousel, Button } from "react-bootstrap";
 import Card from "./Card";
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-
+import Timer from "./Timer";
 const Play = (props) => {
   const [sectedIndex, setSelectedIndex] = useState(0);
   const [cards, setCards] = useState([]);
@@ -18,6 +18,9 @@ const Play = (props) => {
   return (
     <div>
       <h1 className="prompt">{props.prompt}.</h1>
+      <div className="prompt-timer">
+        <Timer roundLength={props.roundLength} startTime={props.startTime} />
+      </div>
       <div className="card-carousel">
         <Carousel
           interval={null}

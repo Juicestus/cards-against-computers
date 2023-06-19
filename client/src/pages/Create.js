@@ -20,9 +20,10 @@ const Create = () => {
       "createNewGame",
       {
         hostName: name,
+        roundLength: roundLength,
       },
       (content) => {
-        saveLocalData(content.id, name, content.privateKey);
+        saveLocalData(content.id, name, content.privateKey, roundLength, null);
         navigate("/game/lobby/" + content.id);
       }
     );
@@ -79,6 +80,7 @@ const Create = () => {
             />
           </div>
         </div>
+
         <Button className="create-join-big-button" onClick={submitHandler}>
           Create Game
         </Button>

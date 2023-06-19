@@ -23,9 +23,15 @@ const Join = () => {
         name: userName,
       },
       (content) => {
-        console.log(content)
-        saveLocalData(content.id, userName, content.privateKey);
-        navigate("/game/lobby/" + content.id);
+        console.log(content);
+        saveLocalData(
+          content.id,
+          userName,
+          content.privateKey,
+          content.roundLength,
+          content.startTime
+        );
+        // navigate("/game/lobby/" + content.id);
       }
     );
   };

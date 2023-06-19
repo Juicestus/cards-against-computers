@@ -17,6 +17,7 @@ import {
 } from "../net";
 import { NavLink } from "react-router-dom";
 import Play from "../components/Play";
+import Timer from "../components/Timer";
 
 const Prompt = () => {
   window.addEventListener("beforeunload", (e) => {
@@ -27,7 +28,9 @@ const Prompt = () => {
   const gameID = useParams().id;
   const username = loadLocalData().userName;
   const privateKey = loadLocalData().privateKey;
+  const roundLength = loadLocalData().roundLength;
   const [gameData, setGameData] = useState({});
+  const startTime = gameData.startTime;
   const [successfulSubmission, setSuccessfulSubmission] = useState(null);
 
   const players = gameData["players"];
@@ -54,17 +57,20 @@ const Prompt = () => {
     );
   };
 
-  console.log(players);
-
   const createBody = () => {
     if (gameData["players"] === undefined) {
       return "";
     } else if (username === gameData["judge"]) {
+      console.log(loadLocalData().roundLength);
       return (
         <div className="home-button-container">
           <h1 className="prompt">
-            You are the judge this round. <br />
+            You are the judge. <br />
           </h1>
+
+          <div className="prompt-timer">
+            <Timer roundLength={roundLength} startTime={startTime} />
+          </div>
 
           {Object.values(players)
             .sort()
@@ -83,8 +89,9 @@ const Prompt = () => {
                 >
                   <h2 className="lobby-card-text">
                     {player.name}
-                    {player.submittedResponse !== "" ? " (" : " (has not "}
-                    submitted)
+                    {player.submittedResponse !== ""
+                      ? " (submitted)"
+                      : " (no submission)"}
                   </h2>
                 </div>
               );
@@ -98,6 +105,8 @@ const Prompt = () => {
           responses={gameData["players"][username]["hand"]}
           showButtons={true}
           submitConsumer={submitHandler}
+          roundLength={gameData.roundLength}
+          startTime={gameData.startTime}
         />
       );
     }

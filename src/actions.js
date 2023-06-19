@@ -109,7 +109,7 @@ const randomStringTestMap = (len) => {
   return arr;
 };
 
-export const createNewGame = async (hostName) => {
+export const createNewGame = async (hostName, roundLength) => {
   const id = await createID();
   const player = createPlayer(hostName);
 
@@ -137,7 +137,7 @@ export const createNewGame = async (hostName) => {
     unusedResponses: randomStringTestMap(100),
     roundsToWin: 5,
     numCardsInHand: 7,
-    roundLength: 60000 // 1 min
+    roundLength: roundLength
   };
 
   setDoc(gameRef, initial);
