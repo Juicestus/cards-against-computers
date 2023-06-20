@@ -86,3 +86,13 @@ export const submitPlayerResponse = async (req, res) => {
     
   res.send(await actions.submitPlayerResponse(id, name, privateKey, playerResponse));
 }
+
+export const judgeGame = async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  const id = req.query.id;
+  const name = req.query.name;
+  const privateKey = req.query.privateKey;
+  
+    
+  res.send(await actions.judgeGame(id, name, privateKey));
+}

@@ -18,9 +18,13 @@ const Play = (props) => {
   return (
     <div>
       <h1 className="prompt">{props.prompt}.</h1>
-      <div className="prompt-timer">
-        <Timer roundLength={props.roundLength} startTime={props.startTime} />
-      </div>
+      {props.judging ? (
+        <></>
+      ) : (
+        <div className="prompt-timer">
+          <Timer roundLength={props.roundLength} startTime={props.startTime} />
+        </div>
+      )}
       <div className="card-carousel">
         <Carousel
           interval={null}

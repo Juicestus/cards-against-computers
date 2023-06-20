@@ -27,6 +27,8 @@ app.get("/startGame", routes.startGame);
 
 app.get("/submitPlayerResponse", routes.submitPlayerResponse);
 
+app.get("/judgeGame", routes.judgeGame);
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

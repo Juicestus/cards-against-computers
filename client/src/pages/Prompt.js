@@ -42,9 +42,40 @@ const Prompt = () => {
     instantiateGameUpdater(gameStage.PROMPT, setGameData, navigate);
   }, [gameID, setGameData]);
 
+  const allPlayersSubmitted = () => {
+    for (const player of Object.keys(gameData.players)) {
+      if (
+        gameData.judge !== gameData.players[player].name &&
+        gameData.players[player].submittedResponse === ""
+      )
+        return false;
+    }
+
+    return true;
+  };
+
   useEffect(() => {
     if (Object.keys(gameData).length > 0) {
       setSubmitted(gameData.players[username].submittedResponse !== "");
+
+      if (
+        ((parseFloat(startTime) + roundLength * 1000 - Date.now()) / 1000 <=
+          0 ||
+          allPlayersSubmitted()) &&
+        username === gameData["judge"]
+      ) {
+        queryBackend(
+          "judgeGame",
+          {
+            id: gameID,
+            name: username,
+            privateKey: privateKey,
+          },
+          () => {
+            navigate("/game/judge/" + gameID);
+          }
+        );
+      }
     }
   }, [gameData]);
 

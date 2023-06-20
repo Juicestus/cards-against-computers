@@ -42,14 +42,14 @@ export const getGameLoop = () => {
 export const gameStage = {
   LOBBY: 0,
   PROMPT: 1,
-  VOTE: 2,
+  JUDGE: 2,
   RESULTS: 3,
 };
 
 export const gameStageURL = (stage, code) => {
   // "lobby",
   // "prompt",
-  // "vote",
+  // "judge",
   // "results",
   return "/game/" + Object.keys(gameStage)[stage].toLowerCase() + "/" + code;
 };

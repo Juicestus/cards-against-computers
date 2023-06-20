@@ -137,7 +137,7 @@ export const createNewGame = async (hostName, roundLength) => {
     unusedResponses: randomStringTestMap(100),
     roundsToWin: 5,
     numCardsInHand: 7,
-    roundLength: roundLength
+    roundLength: roundLength,
   };
 
   setDoc(gameRef, initial);
@@ -193,7 +193,7 @@ export const joinGame = async (id, name) => {
 export const gameStage = {
   LOBBY: 0,
   PROMPT: 1,
-  VOTE: 2,
+  JUDGE: 2,
   RESULTS: 3,
 };
 
@@ -361,7 +361,7 @@ export const moveFromLobbyToGame = async (id, gameRef, startTime) => {
     unusedResponses: unusedResponses,
     players: players,
     round: round + 1,
-    startTime: startTime
+    startTime: startTime,
   });
 };
 
@@ -374,7 +374,7 @@ export const submitPlayerResponse = async (
   const gameRef = doc(db, "games", id);
   const data = await getDoumentData(id);
 
-  let unusedCardResponses = data["unusedResponses"];
+  let unusedResponses = data["unusedResponses"];
   const players = data["players"];
   const judge = data["judge"];
 
@@ -389,17 +389,50 @@ export const submitPlayerResponse = async (
 
   players[name].submittedResponse = submittedResponse;
 
-  for (let i = 0; i < unusedCardResponses.length; i++) {
+  for (let i = 0; i < unusedResponses.length; i++) {
     if (submittedResponse === unusedResponses[i]) {
-      unusedCardResponses.remove(i);
+      unusedResponses.remove(i);
       break;
     }
   }
 
   updateDoc(gameRef, {
     players: players,
-    unusedResponses: unusedCardResponses,
+    unusedResponses: unusedResponses,
   });
 
   return wrapOK({});
+};
+
+export const judgeGame = async (id, name, privateKey) => {
+  const gameRef = doc(db, "games", id);
+  const data = await getDoumentData(id);
+
+  const players = data["players"];
+  const judge = data["judge"];
+
+  if (!(await gameExists(id))) return wrapErr(errs.GAME_NOT_FOUND);
+
+  if (Object.keys(players).includes(name)) {
+    if (name !== judge) return wrapErr(errs.INVALID_PERMISSIONS);
+
+    if (players[name].key !== privateKey)
+      return wrapErr(errs.INVALID_PRIVATE_KEY);
+  } else return wrapErr(errs.PLAYER_NOT_FOUND);
+
+  for (const player of Object.keys(players)) {
+    if (
+      players[player].name !== judge &&
+      players[player].submittedResponse === ""
+    ) {
+      players[player].submittedResponse = Object.values(
+        players[player].hand
+      )[0];
+    }
+  }
+
+  updateDoc(gameRef, {
+    stage: gameStage.JUDGE,
+    players: players,
+  });
 };
