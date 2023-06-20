@@ -29,6 +29,8 @@ app.get("/submitPlayerResponse", routes.submitPlayerResponse);
 
 app.get("/judgeGame", routes.judgeGame);
 
+app.get("/pickWinner", routes.pickWinner);
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

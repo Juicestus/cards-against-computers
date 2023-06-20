@@ -11,8 +11,8 @@ export const errors = Object.freeze({
   INVALID_PRIVATE_KEY: err(5, "Invalid private key"),
   PLAYER_NOT_FOUND: err(6, "Player not found"),
   UNDEFINED_GAME_DATA: err(7, "Undefined game data"),
-  NOT_ENOUGH_PLAYERS:  err(8, "Too few players for this game"),
-  INVALID_PERMISSIONS: err(9, "Invalid permissions")
+  NOT_ENOUGH_PLAYERS: err(8, "Too few players for this game"),
+  INVALID_PERMISSIONS: err(9, "Invalid permissions"),
 });
 
 export const wrapOK = (content) => {
@@ -56,7 +56,7 @@ export const getGameData = async (req, res) => {
   const privateKey = req.query.privateKey;
 
   res.send(await actions.getGameDataAsPlayer(id, name, privateKey));
-}
+};
 
 export const leaveGame = async (req, res) => {
   const id = req.query.id;
@@ -64,7 +64,7 @@ export const leaveGame = async (req, res) => {
   const privateKey = req.query.privateKey;
 
   res.send(await actions.leaveGame(id, name, privateKey));
-}
+};
 
 export const startGame = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -73,9 +73,11 @@ export const startGame = async (req, res) => {
   const privateKey = req.query.privateKey;
   const startTime = req.query.startTime;
   const roundLength = req.query.roundLength;
-    
-  res.send(await actions.startGame(id, name, privateKey, startTime, roundLength));
-}
+
+  res.send(
+    await actions.startGame(id, name, privateKey, startTime, roundLength)
+  );
+};
 
 export const submitPlayerResponse = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -83,16 +85,28 @@ export const submitPlayerResponse = async (req, res) => {
   const name = req.query.name;
   const privateKey = req.query.privateKey;
   const playerResponse = req.query.playerResponse;
-    
-  res.send(await actions.submitPlayerResponse(id, name, privateKey, playerResponse));
-}
+
+  res.send(
+    await actions.submitPlayerResponse(id, name, privateKey, playerResponse)
+  );
+};
 
 export const judgeGame = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   const id = req.query.id;
   const name = req.query.name;
   const privateKey = req.query.privateKey;
-  
-    
+
   res.send(await actions.judgeGame(id, name, privateKey));
-}
+};
+
+export const pickWinner = async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  const id = req.query.id;
+  const name = req.query.name;
+  const privateKey = req.query.privateKey;
+  const winningResponse = req.query.winningResponse;
+
+  res.send(await actions.pickWinner(id, name, privateKey, winningResponse));
+};
+

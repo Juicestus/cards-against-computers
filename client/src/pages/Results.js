@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
 const Results = () => {
-    return <></>;
+    return <>results</>;
 };
 
 export default Results;

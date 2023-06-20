@@ -1,6 +1,6 @@
 import { Carousel, Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, NavLink } from "react-router-dom";
 import {
   loadLocalData,
   registerGameLoop,
@@ -21,6 +21,9 @@ import Play from "../components/Play";
 const Judge = () => {
   const [gameData, setGameData] = useState({});
   const gameID = useParams().id;
+  const username = loadLocalData().userName;
+  const privateKey = loadLocalData().privateKey;
+
   const navigate = useNavigate();
 
   let [playerResponses, setPlayerResponses] = useState([""]);
@@ -49,16 +52,39 @@ const Judge = () => {
   };
 
   const submitHandler = (response) => {
-    console.log(response);
+    queryBackend(
+      "pickWinner",
+      {
+        id: gameID,
+        name: username,
+        privateKey: privateKey,
+        winningResponse: response,
+      },
+      () => {}
+    );
   };
+
   return (
-    <Play
-      prompt={"Pick the best response"}
-      responses={playerResponses}
-      showButtons={true}
-      submitConsumer={submitHandler}
-      judging={true}
-    />
+    <>
+      <h2 className="playing-back">
+        <NavLink to="/" onClick={() => leaveGame()}>
+          {"←"}
+        </NavLink>
+      </h2>
+      {loadLocalData().userName !== gameData.judge ? (
+        <h1 className="judge-player-screen">
+          Wait for the judge to pick the winner.
+        </h1>
+      ) : (
+        <Play
+          prompt={"Pick the best response"}
+          responses={playerResponses}
+          showButtons={true}
+          submitConsumer={submitHandler}
+          judging={true}
+        />
+      )}
+    </>
   );
 };
 

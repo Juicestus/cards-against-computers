@@ -240,8 +240,8 @@ p {
   padding: 0.5em;
   text-align: center;
   min-width: 5em;
-  margin-left: .1em;
-  margin-right: .1em;
+  margin-left: 0.1em;
+  margin-right: 0.1em;
 }
 
 .prompt-timer {
@@ -261,3 +261,17 @@ p {
   margin-bottom: 1em;
 }
 
+.judge-player-screen {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+}
+
+.playing-back {
+  font-size: 2em;
+  align-items: left;
+  flex-direction: column;
+  display: flex;
+  margin-top: 1em;
+  margin-left: 1.2em;
+}

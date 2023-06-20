@@ -138,6 +138,7 @@ export const createNewGame = async (hostName, roundLength) => {
     roundsToWin: 5,
     numCardsInHand: 7,
     roundLength: roundLength,
+    lastRoundWinner: "",
   };
 
   setDoc(gameRef, initial);
@@ -389,12 +390,17 @@ export const submitPlayerResponse = async (
 
   players[name].submittedResponse = submittedResponse;
 
-  for (let i = 0; i < unusedResponses.length; i++) {
-    if (submittedResponse === unusedResponses[i]) {
-      unusedResponses.remove(i);
+  const playersHand = players[name].hand
+
+  for (let i = 0; i < Object.keys(playersHand).length; i++) {
+    if (submittedResponse === Object.values(playersHand)[i]) {
+      playersHand.remove(i);
       break;
     }
   }
+
+  const [index, response] = removeRandomEntry(unusedResponses);
+  players[name]["hand"][index] = response;
 
   updateDoc(gameRef, {
     players: players,
@@ -435,4 +441,39 @@ export const judgeGame = async (id, name, privateKey) => {
     stage: gameStage.JUDGE,
     players: players,
   });
+
+  return wrapOK({});
+};
+
+export const pickWinner = async (id, name, privateKey, winningResponse) => {
+  const gameRef = doc(db, "games", id);
+  const data = await getDoumentData(id);
+
+  const players = data["players"];
+  const judge = data["judge"];
+  let lastRoundWinner = data["lastRoundWinner"];
+
+  if (!(await gameExists(id))) return wrapErr(errs.GAME_NOT_FOUND);
+
+  if (Object.keys(players).includes(name)) {
+    if (name !== judge) return wrapErr(errs.INVALID_PERMISSIONS);
+
+    if (players[name].key !== privateKey)
+      return wrapErr(errs.INVALID_PRIVATE_KEY);
+  } else return wrapErr(errs.PLAYER_NOT_FOUND);
+
+  for (const player of Object.keys(players)) {
+    if (players[player].submittedResponse === winningResponse) {
+      lastRoundWinner = players[player].name;
+      players[player].score++;
+    }
+  }
+
+  updateDoc(gameRef, {
+    stage: gameStage.RESULTS,
+    lastRoundWinner: lastRoundWinner,
+    players: players,
+  });
+
+  return wrapOK({});
 };
