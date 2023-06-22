@@ -8,7 +8,7 @@ const Home = () => {
       </h1>
 
       <h4 className="home-sub-heading">
-        A party game <br /> for horrible machines.
+        A party game <br /> for horrible robots.
       </h4>
 
       <div className="home-button-container">

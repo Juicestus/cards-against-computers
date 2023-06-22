@@ -1,13 +1,26 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { loadLocalData, registerGameLoop, getGameLoop, gameStage, gameStageURL, checkCorrectGame } from "../util";
-import { queryBackend, queryBackendOnErr, startPinging, instantiateGameUpdater, leaveGame } from "../net";
+import {
+  loadLocalData,
+  registerGameLoop,
+  getGameLoop,
+  gameStage,
+  gameStageURL,
+  checkCorrectGame,
+} from "../util";
+import {
+  queryBackend,
+  queryBackendOnErr,
+  startPinging,
+  instantiateGameUpdater,
+  leaveGame,
+} from "../net";
 import { NavLink } from "react-router-dom";
 import { Card } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 
 const Lobby = () => {
-  window.addEventListener('beforeunload', e => {
+  window.addEventListener("beforeunload", (e) => {
     leaveGame();
   });
 
@@ -17,7 +30,7 @@ const Lobby = () => {
 
   useEffect(() => {
     checkCorrectGame(code, navigate);
-    instantiateGameUpdater(gameStage.LOBBY, setGameData, navigate); 
+    instantiateGameUpdater(gameStage.LOBBY, setGameData, navigate);
   }, [code, setGameData]);
 
   const userListElements = () => {
@@ -29,18 +42,20 @@ const Lobby = () => {
     return (
       <>
         <h2 className="lobby-players-label">Players.</h2>
-        {Object.keys(players).sort().map((name) => {
-          const classes =
-            "lobby-card" + (name === host ? " lobby-host-color" : "");
-          return (
-            <div className={classes}>
-              <h2 className="lobby-card-text">
-                {name}
-                {name === host ? "  (host)" : ""}
-              </h2>
-            </div>
-          );
-        })}
+        {Object.keys(players)
+          .sort()
+          .map((name, index) => {
+            const classes =
+              "lobby-card" + (name === host ? " lobby-host-color" : "");
+            return (
+              <div className={classes} key={index}>
+                <h2 className="lobby-card-text">
+                  {name}
+                  {name === host ? "  (host)" : ""}
+                </h2>
+              </div>
+            );
+          })}
       </>
     );
   };
@@ -57,12 +72,12 @@ const Lobby = () => {
   };
 
   const startGameHandler = () => {
-    
     if (Object.keys(gameData.players).length < 3) {
-      alert("Please wait until at least three players join to start the game!")
+      alert("Please wait until at least three players join to start the game!");
       return;
     }
-    
+
+    const startTime = Date.now();
     const localData = loadLocalData();
     queryBackend(
       "startGame",
@@ -70,9 +85,11 @@ const Lobby = () => {
         id: code,
         name: localData.userName,
         privateKey: localData.privateKey,
+        roundLength: localData.roundLength,
+        startTime: startTime,
       },
-      (content) => {
-        navigate("/play/" + code);
+      () => {
+        navigate("/game/prompt/" + code);
       }
     );
   };
@@ -80,15 +97,23 @@ const Lobby = () => {
   const copyHandle = () => {
     // copy to clipboard
     navigator.clipboard.writeText(code);
-  }
+  };
 
   return (
     <div className="page">
       <div>
         <h2 className="create-join-back">
-          <NavLink to="/" onClick={() => leaveGame()}>{"←"}</NavLink>
+          <NavLink to="/" onClick={() => leaveGame()}>
+            {"←"}
+          </NavLink>
         </h2>
-        <h1 className="lobby-heading" style={{cursor:"grab"}} onClick={copyHandle}>Lobby {code}.</h1>
+        <h1
+          className="lobby-heading"
+          style={{ cursor: "grab" }}
+          onClick={copyHandle}
+        >
+          Lobby {code}.
+        </h1>
       </div>
       <div className="home-button-container">
         {startGameButton()}

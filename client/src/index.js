@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./styles/index.css";
 import Play from "./components/Play";
@@ -10,9 +10,11 @@ import Lobby from "./pages/Lobby";
 import Prompt from "./pages/Prompt";
 import Vote from "./pages/Vote";
 import Results from "./pages/Results";
-import 'bootstrap/dist/css/bootstrap.css';
+import "bootstrap/dist/css/bootstrap.css";
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
   <Router>
     <Routes>
       <Route path="/" element={<Home />} />
@@ -24,7 +26,5 @@ ReactDOM.render(
       <Route path="/game/vote/:id" element={<Vote />} />
       <Route path="/game/results/:id" element={<Results />} />
     </Routes>
-  </Router>,
-
-  document.getElementById("root")
+  </Router>
 );

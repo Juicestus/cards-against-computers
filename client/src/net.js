@@ -67,6 +67,7 @@ export const instantiateGameUpdater = (stage, setGameData, navigate) => {
             alert("Host left.")
             navigate("/");
             leaveGame();
+            window.location.reload();
           }
           navigate("/");
           }

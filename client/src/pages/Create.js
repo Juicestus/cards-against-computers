@@ -9,6 +9,7 @@ import { NavLink } from "react-router-dom";
 
 const Create = () => {
   const [name, setName] = useState("");
+  let [roundLength, setRoundLength] = useState(60);
 
   const navigate = useNavigate();
 
@@ -19,9 +20,10 @@ const Create = () => {
       "createNewGame",
       {
         hostName: name,
+        roundLength: roundLength,
       },
       (content) => {
-        saveLocalData(content.id, name, content.privateKey);
+        saveLocalData(content.id, name, content.privateKey, roundLength, null);
         navigate("/game/lobby/" + content.id);
       }
     );
@@ -35,7 +37,7 @@ const Create = () => {
         </h2>
         <h1 className="create-join-heading">Create a Game.</h1>
       </div>
-      <div className="create-join-big-container" >
+      <div className="create-join-big-container">
         <h4 className="create-join-label">Your name.</h4>
         <br />
         <input
@@ -46,8 +48,39 @@ const Create = () => {
           className="create-join-big-input-box"
           onChange={bindInput(setName)}
         />
-        <br></br>
-        <br></br>
+        <div className="create-set-round-length">
+          <h4 className="create-join-label">Round Length.</h4>
+
+          <div className="create-round-length-setter">
+            <input
+              type="button"
+              value="-"
+              className="btn btn-danger create-join-button"
+              onClick={(e) => {
+                e.preventDefault();
+                setRoundLength(Math.max(0, --roundLength));
+              }}
+            />
+
+            <input
+              type="text"
+              className="create-join-med-input-box"
+              onChange={bindInput(setRoundLength)}
+              value={roundLength}
+            />
+
+            <input
+              type="button"
+              value="+"
+              className="btn btn-success create-join-button"
+              onClick={(e) => {
+                e.preventDefault();
+                setRoundLength(++roundLength);
+              }}
+            />
+          </div>
+        </div>
+
         <Button className="create-join-big-button" onClick={submitHandler}>
           Create Game
         </Button>

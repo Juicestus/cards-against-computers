@@ -35,11 +35,12 @@ export const getActiveGames = async (req, res) => {
 export const createNewGame = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   const hostName = req.query.hostName;
+  const roundLength = req.query.roundLength;
   if (!hostName) {
     res.status(400).send();
     return;
   }
-  res.send(await actions.createNewGame(hostName));
+  res.send(await actions.createNewGame(hostName, roundLength));
 };
 
 export const joinGame = async (req, res) => {
@@ -70,6 +71,18 @@ export const startGame = async (req, res) => {
   const id = req.query.id;
   const name = req.query.name;
   const privateKey = req.query.privateKey;
+  const startTime = req.query.startTime;
+  const roundLength = req.query.roundLength;
     
-  res.send(await actions.startGame(id, name, privateKey));
+  res.send(await actions.startGame(id, name, privateKey, startTime, roundLength));
+}
+
+export const submitPlayerResponse = async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  const id = req.query.id;
+  const name = req.query.name;
+  const privateKey = req.query.privateKey;
+  const playerResponse = req.query.playerResponse;
+    
+  res.send(await actions.submitPlayerResponse(id, name, privateKey, playerResponse));
 }
