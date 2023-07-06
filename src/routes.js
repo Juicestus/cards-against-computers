@@ -110,3 +110,12 @@ export const pickWinner = async (req, res) => {
   res.send(await actions.pickWinner(id, name, privateKey, winningResponse));
 };
 
+export const startNextRound = async(req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  const id = req.query.id;
+  const name = req.query.name;
+  const privateKey = req.query.privateKey;
+  const startTime = req.query.startTime;
+
+  res.send(await actions.startNextRound(id, name, privateKey, startTime));
+}

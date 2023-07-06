@@ -25,10 +25,10 @@ export const loadLocalData = () => {
 };
 
 export const checkCorrectGame = (code, navigate) => {
-  if (loadLocalData().gameID !== code) {
-    alert("You are not part of this game!");
-    navigate("/");
-  }
+  // if (loadLocalData().gameID !== code) {
+  //   alert("You are not part of this game!");
+  //   navigate("/");
+  // }
 };
 
 export const registerGameLoop = (interval) => {

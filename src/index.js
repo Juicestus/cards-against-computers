@@ -31,6 +31,8 @@ app.get("/judgeGame", routes.judgeGame);
 
 app.get("/pickWinner", routes.pickWinner);
 
+app.get("/startNextRound", routes.startNextRound);
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

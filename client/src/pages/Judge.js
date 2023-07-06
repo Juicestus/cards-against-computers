@@ -24,9 +24,15 @@ const Judge = () => {
   const username = loadLocalData().userName;
   const privateKey = loadLocalData().privateKey;
 
+  const [initLoadTime, setInitLoadTime] = useState(Date.now());
+
   const navigate = useNavigate();
 
   let [playerResponses, setPlayerResponses] = useState([""]);
+
+  useEffect(() => {
+    setInitLoadTime(Date.now());
+  }, []);
 
   useEffect(() => {
     checkCorrectGame(gameID, navigate);
@@ -64,7 +70,9 @@ const Judge = () => {
     );
   };
 
-  return (
+  return Date.now() - initLoadTime <= 1000 ? (
+    <></>
+  ) : (
     <>
       <h2 className="playing-back">
         <NavLink to="/" onClick={() => leaveGame()}>
@@ -72,9 +80,14 @@ const Judge = () => {
         </NavLink>
       </h2>
       {loadLocalData().userName !== gameData.judge ? (
-        <h1 className="judge-player-screen">
-          Wait for the judge to pick the winner.
-        </h1>
+        <>
+          <h1 className="judge-player-screen">
+            Wait for the judge <br /> to pick the winner.
+          </h1>
+
+          <h1 className="submitted-heading">or don't.</h1>
+          <h1 className="judge-player-sub-heading">i don't care.</h1>
+        </>
       ) : (
         <Play
           prompt={"Pick the best response"}

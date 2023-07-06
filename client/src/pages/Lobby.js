@@ -116,8 +116,8 @@ const Lobby = () => {
         </h1>
       </div>
       <div className="home-button-container">
-        {startGameButton()}
         {userListElements()}
+        {startGameButton()}
       </div>
     </div>
   );

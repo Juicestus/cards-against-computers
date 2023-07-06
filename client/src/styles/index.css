@@ -1,7 +1,7 @@
 body {
   background-color: black !important;
   overflow-x: hidden;
-  width: 97%;
+  /* width: 97%; */
   margin-left: 5%;
 }
 
@@ -142,7 +142,7 @@ p {
   font-size: 2em;
   height: 3em;
   /* line-height: 4.5em; */
-  margin-top: 0em;
+  margin-top: 4em;
   border-radius: 0.1em;
   margin-bottom: 1em;
 }
@@ -252,12 +252,14 @@ p {
 
 .submitted-heading {
   display: flex;
+  margin-top: 1em;
   justify-content: center;
 }
 
 .submitted-sub-heading {
   display: flex;
   justify-content: center;
+  margin-top: .5em;
   margin-bottom: 1em;
 }
 
@@ -267,11 +269,47 @@ p {
   margin-top: 1em;
 }
 
+.judge-player-sub-heading {
+  display: flex;
+  justify-content: center;
+  margin-top: -.2em;
+  
+}
+
 .playing-back {
   font-size: 2em;
   align-items: left;
   flex-direction: column;
   display: flex;
-  margin-top: 1em;
+  margin-top: 0.1em;
   margin-left: 1.2em;
+  margin-top: 1em;
+}
+
+.playing-nav-link {
+  font-size: 2em;
+  margin-right: .5em;
+  display: flex;
+  align-items: left;
+  justify-content: center;
+}
+
+.round-num-text {
+  margin-right: 1em;
+  margin-top: .5em;
+  text-align: center;
+  font-size: 1em;
+}
+
+.results-heading {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+  text-align: center;
+}
+
+.results-sub-heading {
+  display: flex;
+  justify-content: center;
+  text-align: center;
 }

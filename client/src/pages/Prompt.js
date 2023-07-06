@@ -29,8 +29,8 @@ const Prompt = () => {
   const gameID = useParams().id;
   const username = loadLocalData().userName;
   const privateKey = loadLocalData().privateKey;
-  const roundLength = loadLocalData().roundLength;
   const [gameData, setGameData] = useState({});
+  const roundLength = gameData.roundLength;
   const startTime = gameData.startTime;
   const [submitted, setSubmitted] = useState(false);
 
@@ -110,7 +110,7 @@ const Prompt = () => {
             .sort()
             .map((player, index) => {
               return player.name === host ? (
-                <></>
+                <div key={index}></div>
               ) : (
                 <div
                   key={index}
@@ -121,7 +121,7 @@ const Prompt = () => {
                       : { backgroundColor: "#b31a1a" }
                   }
                 >
-                  <h2 className="lobby-card-text">
+                  <h2 className="lobby-card-text" key={index}>
                     {player.name}
                     {player.submittedResponse !== ""
                       ? " (submitted)"
